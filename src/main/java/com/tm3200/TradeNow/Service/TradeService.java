@@ -10,6 +10,7 @@ import com.tm3200.TradeNow.Repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -69,6 +70,23 @@ public class TradeService {
         }
 
         return tradeRepository.save(trade);
+    }
+
+    public List<Trade> getActiveTrades(Integer userId) {
+        Optional<User> optional = userRepository.findById(userId);
+        if (!optional.isPresent()) {
+            throw new RuntimeException("User not found");
+        }
+
+        return tradeRepository.findByUser1_IdOrUser2_Id(userId, userId);
+    }
+
+    public Trade getTradeById(Integer tradeId) {
+        Optional<Trade> optional = tradeRepository.findById(tradeId);
+        if (!optional.isPresent()) {
+            throw new RuntimeException("Trade not found");
+        }
+        return optional.get();
     }
 
 }

@@ -59,5 +59,24 @@ public class TradeController {
         }
     }
 
+    @GetMapping("/trades/user/{userId}")
+    public ResponseEntity<?> getActiveTrades(@PathVariable("userId") Integer userId) {
+        try {
+            List<Trade> trades = tradeService.getActiveTrades(userId);
+            return ResponseEntity.ok(trades);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/trades/{id}")
+    public ResponseEntity<?> getTradeById(@PathVariable("id") Integer id) {
+        try {
+            Trade trade = tradeService.getTradeById(id);
+            return ResponseEntity.ok(trade);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }
