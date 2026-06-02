@@ -1,6 +1,7 @@
 package com.tm3200.TradeNow.Service;
 
 
+import com.tm3200.TradeNow.Model.DTO.TradeConfirmDTO;
 import com.tm3200.TradeNow.Model.DTO.TradeCreateDTO;
 import com.tm3200.TradeNow.Model.Trade;
 import com.tm3200.TradeNow.Model.User;
@@ -41,6 +42,28 @@ public class TradeService {
         trade.setConfirmedByUser1(false);
         trade.setConfirmedByUser2(false);
         trade.setStatus("ACTIVE");
+
+        return tradeRepository.save(trade);
+    }
+
+    public Trade confirmDelivery(Integer tradeId, TradeConfirmDTO dto) {
+        Optional<Trade> optionalTrade = tradeRepository.findById(tradeId);
+        if (!optionalTrade.isPresent()) {
+            throw new RuntimeException("Trade not found");
+        }
+
+        Trade trade = optionalTrade.get();
+
+        if (dto.getUserId().equals(trade.getUser1().getId())) {
+            trade.setConfirmedByUser1(true);
+        } else if (dto.getUserId().equals(trade.getUser2().getId())) {
+            trade.setConfirmedByUser2(true);
+        } else {
+            throw new RuntimeException("User is not part of this trade");
+        }
+        if (trade.getConfirmedByUser1() && trade.getConfirmedByUser2()) {
+            trade.setStatus("COMPLETED");
+        }
 
         return tradeRepository.save(trade);
     }
