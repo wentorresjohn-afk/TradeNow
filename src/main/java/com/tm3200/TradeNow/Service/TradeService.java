@@ -54,6 +54,9 @@ public class TradeService {
 
         Trade trade = optionalTrade.get();
 
+        if (trade.getStatus().equals("COMPLETED")) {
+            throw new RuntimeException("Trade is already completed");
+        }
         if (dto.getUserId().equals(trade.getUser1().getId())) {
             trade.setConfirmedByUser1(true);
         } else if (dto.getUserId().equals(trade.getUser2().getId())) {
