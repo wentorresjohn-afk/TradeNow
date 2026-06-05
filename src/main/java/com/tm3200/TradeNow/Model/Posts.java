@@ -22,6 +22,10 @@ public class Posts
     private String exchangeFor;
     private PublicationStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id" )
+    private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -35,7 +39,7 @@ public class Posts
     {
     }
 
-    public Posts(Integer id, PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, PublicationStatus status, Category category, Zone zone) {
+    public Posts(Integer id, PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, PublicationStatus status, User user, Category category, Zone zone) {
         this.id = id;
         this.type = type;
         this.title = title;
@@ -43,6 +47,7 @@ public class Posts
         this.estimatedValue = estimatedValue;
         this.exchangeFor = exchangeFor;
         this.status = status;
+        this.user = user;
         this.category = category;
         this.zone = zone;
     }
@@ -101,6 +106,14 @@ public class Posts
 
     public void setStatus(PublicationStatus status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Category getCategory() {
