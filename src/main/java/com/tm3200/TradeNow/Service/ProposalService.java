@@ -78,7 +78,7 @@ public class ProposalService {
             }
 
             Proposal counterProposal = new Proposal();
-            counterProposal.setSenderId(proposal.getTargetPublicationId().getUser()); // TODO: agregar campo user a Posts
+            counterProposal.setSenderId(proposal.getTargetPublicationId().getUser());
             counterProposal.setTargetPublicationId(proposal.getOfferedPublicationId());
             counterProposal.setOfferedPublicationId(optionalCounter.get());
             counterProposal.setStatus(ProposalStatus.PENDING);
@@ -116,7 +116,30 @@ public class ProposalService {
         return result;
     }
 
+    // RF11 - Ver propuestas recibidas
     public List<ProposalHistoryDTO> getReceivedProposals(Integer userId) {
-        throw new RuntimeException("Not implemented yet: waiting for user field in Posts");
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        List<Posts> posts = postsRepository.findByUser(optional.get());
+        List<ProposalHistoryDTO> result = new ArrayList<>();
+
+        for (Posts post : posts) {
+            List<Proposal> proposals = proposalRepository.findByTargetPublicationId(post);
+            for (Proposal p : proposals) {
+                ProposalHistoryDTO dto = new ProposalHistoryDTO(
+                        p.getId(),
+                        p.getSenderId().getName(),
+                        p.getTargetPublicationId().getTitle(),
+                        p.getOfferedPublicationId().getTitle(),
+                        p.getStatus(),
+                        p.getCreatedAt()
+                );
+                result.add(dto);
+            }
+        }
+        return result;
     }
 }
