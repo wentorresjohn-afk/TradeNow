@@ -5,7 +5,7 @@ import com.tm3200.TradeNow.Model.DTO.ProposalHistoryDTO;
 import com.tm3200.TradeNow.Model.DTO.ProposalResponseDTO;
 import com.tm3200.TradeNow.Model.Posts;
 import com.tm3200.TradeNow.Model.Proposal;
-import com.tm3200.TradeNow.Model.ProposalStatus;
+import com.tm3200.TradeNow.Model.Enum.ProposalStatus;
 import com.tm3200.TradeNow.Model.User;
 import com.tm3200.TradeNow.Repository.PostsJpaRepository;
 import com.tm3200.TradeNow.Repository.ProposalJpaRepository;

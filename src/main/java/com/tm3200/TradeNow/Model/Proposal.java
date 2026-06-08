@@ -1,5 +1,6 @@
 package com.tm3200.TradeNow.Model;
 
+import com.tm3200.TradeNow.Model.Enum.ProposalStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
