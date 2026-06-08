@@ -1,17 +1,20 @@
 package com.tm3200.TradeNow.Service;
 
+import com.tm3200.TradeNow.Model.*;
 import com.tm3200.TradeNow.Model.DTO.ProposalCreateDTO;
 import com.tm3200.TradeNow.Model.DTO.ProposalHistoryDTO;
 import com.tm3200.TradeNow.Model.DTO.ProposalResponseDTO;
+import com.tm3200.TradeNow.Repository.PostsJpaRepository;
+import com.tm3200.TradeNow.Repository.ProposalJpaRepository;
+import com.tm3200.TradeNow.Repository.TradeJpaRepository;
+import com.tm3200.TradeNow.Repository.UserJpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.tm3200.TradeNow.Model.Posts;
 import com.tm3200.TradeNow.Model.Proposal;
 import com.tm3200.TradeNow.Model.Enum.ProposalStatus;
 import com.tm3200.TradeNow.Model.User;
-import com.tm3200.TradeNow.Repository.PostsJpaRepository;
-import com.tm3200.TradeNow.Repository.ProposalJpaRepository;
-import com.tm3200.TradeNow.Repository.UserJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +32,8 @@ public class ProposalService {
     @Autowired
     private PostsJpaRepository postsRepository;
 
+    @Autowired
+    private TradeJpaRepository tradeRepository;
 
     //enviar propuestas de trueque
     public Proposal sendProposal(ProposalCreateDTO dto){
