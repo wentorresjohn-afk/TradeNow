@@ -1,4 +1,4 @@
-package com.tm3200.TradeNow.Model;
+package com.tm3200.TradeNow.Model.Enum;
 
 public enum UserType {
     GENERAL,

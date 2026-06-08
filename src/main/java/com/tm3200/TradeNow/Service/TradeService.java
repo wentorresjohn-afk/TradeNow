@@ -3,6 +3,7 @@ package com.tm3200.TradeNow.Service;
 
 import com.tm3200.TradeNow.Model.DTO.TradeConfirmDTO;
 import com.tm3200.TradeNow.Model.DTO.TradeCreateDTO;
+import com.tm3200.TradeNow.Model.Enum.TradeStatus;
 import com.tm3200.TradeNow.Model.Trade;
 import com.tm3200.TradeNow.Model.User;
 import com.tm3200.TradeNow.Repository.TradeJpaRepository;
@@ -42,7 +43,7 @@ public class TradeService {
         trade.setUser2(optionalUser2.get());
         trade.setConfirmedByUser1(false);
         trade.setConfirmedByUser2(false);
-        trade.setStatus("ACTIVE");
+        trade.setStatus(TradeStatus.ACTIVE);
 
         return tradeRepository.save(trade);
     }
@@ -55,7 +56,7 @@ public class TradeService {
 
         Trade trade = optionalTrade.get();
 
-        if (trade.getStatus().equals("COMPLETED")) {
+        if (trade.getStatus().equals(TradeStatus.COMPLETED)) {
             throw new RuntimeException("Trade is already completed");
         }
         if (dto.getUserId().equals(trade.getUser1().getId())) {
@@ -66,7 +67,7 @@ public class TradeService {
             throw new RuntimeException("User is not part of this trade");
         }
         if (trade.getConfirmedByUser1() && trade.getConfirmedByUser2()) {
-            trade.setStatus("COMPLETED");
+            trade.setStatus(TradeStatus.COMPLETED);
         }
 
         return tradeRepository.save(trade);

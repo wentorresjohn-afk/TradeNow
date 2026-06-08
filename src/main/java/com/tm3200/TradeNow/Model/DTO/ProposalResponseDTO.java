@@ -1,6 +1,6 @@
 package com.tm3200.TradeNow.Model.DTO;
 
-import com.tm3200.TradeNow.Model.ProposalStatus;
+import com.tm3200.TradeNow.Model.Enum.ProposalStatus;
 import jakarta.validation.constraints.NotNull;
 
 public class ProposalResponseDTO {
