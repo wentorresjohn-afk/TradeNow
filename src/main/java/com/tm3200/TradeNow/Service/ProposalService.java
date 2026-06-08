@@ -1,14 +1,12 @@
 package com.tm3200.TradeNow.Service;
 
+import com.tm3200.TradeNow.Model.*;
 import com.tm3200.TradeNow.Model.DTO.ProposalCreateDTO;
 import com.tm3200.TradeNow.Model.DTO.ProposalHistoryDTO;
 import com.tm3200.TradeNow.Model.DTO.ProposalResponseDTO;
-import com.tm3200.TradeNow.Model.Posts;
-import com.tm3200.TradeNow.Model.Proposal;
-import com.tm3200.TradeNow.Model.ProposalStatus;
-import com.tm3200.TradeNow.Model.User;
 import com.tm3200.TradeNow.Repository.PostsJpaRepository;
 import com.tm3200.TradeNow.Repository.ProposalJpaRepository;
+import com.tm3200.TradeNow.Repository.TradeJpaRepository;
 import com.tm3200.TradeNow.Repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,8 @@ public class ProposalService {
     @Autowired
     private PostsJpaRepository postsRepository;
 
+    @Autowired
+    private TradeJpaRepository tradeRepository;
 
     //enviar propuestas de trueque
     public Proposal sendProposal(ProposalCreateDTO dto){
@@ -88,13 +88,27 @@ public class ProposalService {
             proposal.setCounterProposalId(counterProposal);
         }
 
+        if (dto.getStatus().equals(ProposalStatus.ACCEPTED)) {
+            Trade trade = new Trade();
+            trade.setUser1(proposal.getSenderId());
+            trade.setUser2(proposal.getTargetPublicationId().getUser());
+            trade.setConditions("Proposal #" + proposal.getId() + " accepted");
+            trade.setExchangeDate(LocalDate.now().toString());
+            trade.setDeliveryMode("To be defined");
+            trade.setAgreement("Both parties agreed via proposal");
+            trade.setConfirmedByUser1(false);
+            trade.setConfirmedByUser2(false);
+            trade.setStatus("ACTIVE");
+            tradeRepository.save(trade);
+        }
+
         proposal.setStatus(dto.getStatus());
         return proposalRepository.save(proposal);
     }
 
     public List<ProposalHistoryDTO> getSentProposals(Integer userId) {
         Optional<User> optional = userRepository.findById(userId);
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             throw new RuntimeException("User not found");
         }
 
