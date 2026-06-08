@@ -5,7 +5,7 @@ import com.tm3200.TradeNow.Model.DTO.UserRegistrationDTO;
 import com.tm3200.TradeNow.Model.DTO.UserStatusDTO;
 import com.tm3200.TradeNow.Model.DTO.UserUpdateDTO;
 import com.tm3200.TradeNow.Model.User;
-import com.tm3200.TradeNow.Model.UserType;
+import com.tm3200.TradeNow.Model.Enum.UserType;
 import com.tm3200.TradeNow.Repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -4,6 +4,7 @@ import com.tm3200.TradeNow.Model.*;
 import com.tm3200.TradeNow.Model.DTO.ProposalCreateDTO;
 import com.tm3200.TradeNow.Model.DTO.ProposalHistoryDTO;
 import com.tm3200.TradeNow.Model.DTO.ProposalResponseDTO;
+import com.tm3200.TradeNow.Model.Enum.ProposalStatus;
 import com.tm3200.TradeNow.Repository.PostsJpaRepository;
 import com.tm3200.TradeNow.Repository.ProposalJpaRepository;
 import com.tm3200.TradeNow.Repository.TradeJpaRepository;
