@@ -1,5 +1,6 @@
 package com.tm3200.TradeNow.Model;
 
+import com.tm3200.TradeNow.Model.Enum.TradeStatus;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,7 +19,8 @@ public class Trade {
     private Boolean confirmedByUser1;
     private Boolean confirmedByUser2;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TradeStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user1_id")
@@ -33,7 +35,7 @@ public class Trade {
 
     public Trade(Integer id, String conditions, String exchangeDate,
                  String deliveryMode, String agreement, Boolean confirmedByUser1,
-                 Boolean confirmedByUser2, String status, User user1, User user2) {
+                 Boolean confirmedByUser2, TradeStatus status, User user1, User user2) {
         this.id = id;
         this.conditions = conditions;
         this.exchangeDate = exchangeDate;
@@ -102,11 +104,11 @@ public class Trade {
         this.confirmedByUser2 = confirmedByUser2;
     }
 
-    public String getStatus() {
+    public TradeStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TradeStatus status) {
         this.status = status;
     }
 
