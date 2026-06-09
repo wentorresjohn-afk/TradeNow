@@ -296,4 +296,5 @@ Captura de la consola mostrando el inicio correcto de Spring Boot.
 
 ### Evidencia 4 - Prueba de endpoints
 
-Agregar captura de una prueba exitosa realizada mediante Postman.
+<img width="977" height="1005" alt="WhatsApp Image 2026-06-08 at 9 29 29 PM" src="https://github.com/user-attachments/assets/b6051d60-af56-47c0-b106-81ea5da63366" />
+
