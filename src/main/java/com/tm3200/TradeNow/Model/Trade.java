@@ -3,6 +3,8 @@ package com.tm3200.TradeNow.Model;
 import com.tm3200.TradeNow.Model.Enum.TradeStatus;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "trades")
 public class Trade {
@@ -12,7 +14,7 @@ public class Trade {
     private Integer id;
 
     private String conditions;
-    private String exchangeDate;
+    private LocalDate exchangeDate;
     private String deliveryMode;
     private String agreement;
 
@@ -33,7 +35,7 @@ public class Trade {
     public Trade() {
     }
 
-    public Trade(Integer id, String conditions, String exchangeDate,
+    public Trade(Integer id, String conditions, LocalDate exchangeDate,
                  String deliveryMode, String agreement, Boolean confirmedByUser1,
                  Boolean confirmedByUser2, TradeStatus status, User user1, User user2) {
         this.id = id;
@@ -64,11 +66,11 @@ public class Trade {
         this.conditions = conditions;
     }
 
-    public String getExchangeDate() {
+    public LocalDate getExchangeDate() {
         return exchangeDate;
     }
 
-    public void setExchangeDate(String exchangeDate) {
+    public void setExchangeDate(LocalDate exchangeDate) {
         this.exchangeDate = exchangeDate;
     }
 

@@ -9,10 +9,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,8 @@ public class TradeController {
         try {
             Trade trade = tradeService.createTrade(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(trade);
+        } catch (HttpMessageNotReadableException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format, use: YYYY-MM-DD");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

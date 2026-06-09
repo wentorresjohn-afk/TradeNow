@@ -99,7 +99,7 @@ public class ProposalService {
             trade.setUser1(proposal.getSenderId());
             trade.setUser2(proposal.getTargetPublicationId().getUser());
             trade.setConditions("Proposal #" + proposal.getId() + " accepted");
-            trade.setExchangeDate(LocalDate.now().toString());
+            trade.setExchangeDate(LocalDate.now());
             trade.setDeliveryMode("To be defined");
             trade.setAgreement("Both parties agreed via proposal");
             trade.setConfirmedByUser1(false);

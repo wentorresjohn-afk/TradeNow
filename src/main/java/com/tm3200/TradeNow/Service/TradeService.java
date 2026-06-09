@@ -11,6 +11,8 @@ import com.tm3200.TradeNow.Repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,13 @@ public class TradeService {
     private UserJpaRepository userRepository;
 
     public Trade createTrade(TradeCreateDTO dto) {
+        LocalDate exchangeDate;
+
+        try {
+            exchangeDate = LocalDate.parse(dto.getExchangeDate());
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Invalid date format, use: YYYY-MM-DD");
+        }
         Optional<User> optionalUser1 = userRepository.findById(dto.getUser1Id());
         if (!optionalUser1.isPresent()) {
             throw new RuntimeException("User1 not found");
@@ -37,7 +46,7 @@ public class TradeService {
 
         Trade trade = new Trade();
         trade.setConditions(dto.getConditions());
-        trade.setExchangeDate(dto.getExchangeDate());
+        trade.setExchangeDate(exchangeDate);
         trade.setDeliveryMode(dto.getDeliveryMode());
         trade.setAgreement(dto.getAgreement());
         trade.setUser1(optionalUser1.get());

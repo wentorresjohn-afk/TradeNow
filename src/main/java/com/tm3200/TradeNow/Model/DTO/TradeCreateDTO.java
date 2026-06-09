@@ -3,6 +3,8 @@ package com.tm3200.TradeNow.Model.DTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
+
 public class TradeCreateDTO {
 
     @NotBlank(message = "Conditions are required")
