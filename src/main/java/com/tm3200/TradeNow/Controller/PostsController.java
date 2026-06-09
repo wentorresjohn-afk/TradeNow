@@ -68,6 +68,28 @@ public class PostsController
         return ResponseEntity.ok("Publicación exitosa");
     }//Fin del metodo
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable Integer id, @Valid @RequestBody PostsDTO dto, BindingResult result)
+    {
+        if (result.hasErrors())
+        {
+            List<String> errors = new ArrayList<>();
+
+            for (ObjectError error : result.getAllErrors())
+            {
+                errors.add(error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        if (postsService.updatePost(id, dto) == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publicación no encontrada o datos inválidos");
+        }
+
+        return ResponseEntity.ok("Publicación actualizada exitosamente");
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
 

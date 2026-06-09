@@ -15,11 +15,15 @@ public class Posts
     @Id//Hace que no pueda repetirse el id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//Va incrementando el id
     private Integer id;
+
+    @Enumerated(EnumType.STRING)
     private PublicationType type;
     private String title;
     private String description;
     private BigDecimal estimatedValue;
     private String exchangeFor;
+
+    @Enumerated(EnumType.STRING)
     private PublicationStatus status;
 
     @ManyToOne

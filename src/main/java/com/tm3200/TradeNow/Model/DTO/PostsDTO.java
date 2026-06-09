@@ -19,16 +19,23 @@ public class PostsDTO
     private BigDecimal estimatedValue;
     private String exchangeFor;
 
+    private Integer userId;
+    private Integer categoryId;
+    private Integer zoneId;
+
     public PostsDTO()
     {
     }
 
-    public PostsDTO(PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor) {
+    public PostsDTO(PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, Integer userId, Integer categoryId, Integer zoneId) {
         this.type = type;
         this.title = title;
         this.description = description;
         this.estimatedValue = estimatedValue;
         this.exchangeFor = exchangeFor;
+        this.userId = userId;
+        this.categoryId = categoryId;
+        this.zoneId = zoneId;
     }
 
     public PublicationType getType() {
@@ -69,5 +76,29 @@ public class PostsDTO
 
     public void setExchangeFor(String exchangeFor) {
         this.exchangeFor = exchangeFor;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Integer getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(Integer zoneId) {
+        this.zoneId = zoneId;
     }
 }
