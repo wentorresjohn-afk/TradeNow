@@ -11,6 +11,7 @@ import com.tm3200.TradeNow.Repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +80,14 @@ public class TradeService {
             throw new RuntimeException("User not found");
         }
 
-        return tradeRepository.findByUser1_IdOrUser2_Id(userId, userId);
+        List<Trade> tradesAsUser1 = tradeRepository.findByUser1_IdAndStatus(userId, TradeStatus.ACTIVE);
+        List<Trade> tradesAsUser2 = tradeRepository.findByUser2_IdAndStatus(userId, TradeStatus.ACTIVE);
+
+        List<Trade> allTrades = new ArrayList<>();
+        allTrades.addAll(tradesAsUser1);
+        allTrades.addAll(tradesAsUser2);
+
+        return allTrades;
     }
 
     public Trade getTradeById(Integer tradeId) {
