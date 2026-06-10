@@ -4,7 +4,13 @@ import com.tm3200.TradeNow.Model.DTO.PostsDTO;
 import com.tm3200.TradeNow.Model.Enum.PublicationStatus;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import com.tm3200.TradeNow.Model.Posts;
+import com.tm3200.TradeNow.Model.PostsEntitys.Category;
+import com.tm3200.TradeNow.Model.PostsEntitys.Zone;
+import com.tm3200.TradeNow.Model.User;
+import com.tm3200.TradeNow.Repository.CategoryJpaRepository;
 import com.tm3200.TradeNow.Repository.PostsJpaRepository;
+import com.tm3200.TradeNow.Repository.UserJpaRepository;
+import com.tm3200.TradeNow.Repository.ZoneJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +22,15 @@ public class PostsService
 {
     @Autowired
     private PostsJpaRepository postsJpaRepository;
+
+    @Autowired
+    private CategoryJpaRepository categoryJpaRepository;
+
+    @Autowired
+    private ZoneJpaRepository zoneJpaRepository;
+
+    @Autowired
+    private UserJpaRepository userJpaRepository;
 
     //Metodo que lista todas las publicaciones
     public List<Posts> findAll()
@@ -52,6 +67,14 @@ public class PostsService
         posts.setExchangeFor(dto.getExchangeFor());
         posts.setStatus(PublicationStatus.PENDING);
 
+        User user = userJpaRepository.findById(dto.getUserId()).orElse(null);
+        Category category = categoryJpaRepository.findById(dto.getCategoryId()).orElse(null);
+        Zone zone = zoneJpaRepository.findById(dto.getZoneId()).orElse(null);
+
+        posts.setUser(user);
+        posts.setCategory(category);
+        posts.setZone(zone);
+
         return postsJpaRepository.save(posts);
     }//Fin del metodo
 
@@ -80,6 +103,14 @@ public class PostsService
         posts.setDescription(dto.getDescription());
         posts.setEstimatedValue(dto.getEstimatedValue());
         posts.setExchangeFor(dto.getExchangeFor());
+
+        User user = userJpaRepository.findById(dto.getUserId()).orElse(null);
+        Category category = categoryJpaRepository.findById(dto.getCategoryId()).orElse(null);
+        Zone zone = zoneJpaRepository.findById(dto.getZoneId()).orElse(null);
+
+        posts.setUser(user);
+        posts.setCategory(category);
+        posts.setZone(zone);
 
         return postsJpaRepository.save(posts);
     }//Fin del metodo
