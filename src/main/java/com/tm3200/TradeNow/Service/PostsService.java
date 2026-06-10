@@ -68,8 +68,11 @@ public class PostsService
         posts.setStatus(PublicationStatus.PENDING);
 
         User user = userJpaRepository.findById(dto.getUserId()).orElse(null);
+        if (user == null) return null;
         Category category = categoryJpaRepository.findById(dto.getCategoryId()).orElse(null);
+        if (category == null) return null;
         Zone zone = zoneJpaRepository.findById(dto.getZoneId()).orElse(null);
+        if (zone == null) return null;
 
         posts.setUser(user);
         posts.setCategory(category);
@@ -105,8 +108,11 @@ public class PostsService
         posts.setExchangeFor(dto.getExchangeFor());
 
         User user = userJpaRepository.findById(dto.getUserId()).orElse(null);
+        if (user == null) return null;
         Category category = categoryJpaRepository.findById(dto.getCategoryId()).orElse(null);
+        if (category == null) return null;
         Zone zone = zoneJpaRepository.findById(dto.getZoneId()).orElse(null);
+        if (zone == null) return null;
 
         posts.setUser(user);
         posts.setCategory(category);
