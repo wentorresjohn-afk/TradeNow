@@ -7,6 +7,7 @@ import com.tm3200.TradeNow.Model.DTO.UserUpdateDTO;
 import com.tm3200.TradeNow.Model.User;
 import com.tm3200.TradeNow.Model.Enum.UserType;
 import com.tm3200.TradeNow.Repository.UserJpaRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class UserService {
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        user.setPassword(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt()));
         user.setGeographicZone(dto.getGeographicZone());
         user.setUserType(UserType.GENERAL);
         user.setActive(true);
@@ -44,7 +45,7 @@ public class UserService {
         User user = optional.get();
 
 
-        if (!user.getPassword().equals(dto.getPassword())) {
+        if (!BCrypt.checkpw(dto.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
 
