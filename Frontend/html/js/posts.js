@@ -2,8 +2,10 @@ const API_URL = 'https://tradenow-437n.onrender.com/api';
 
 // --- CONFIGURACIÓN DE CLOUDINARY ---
 // Sustituye estos valores con los de tu cuenta gratuita de Cloudinary
-const CLOUD_NAME = "tu_cloud_name_aqui"; 
-const UPLOAD_PRESET = "tu_upload_preset_aqui"; 
+// --- CONFIGURACIÓN DE CLOUDINARY ---
+const CLOUD_NAME = "sboc5dmc"; 
+const UPLOAD_PRESET = "mi_preset_tradenow"; // O el nombre que tú le hayas puesto
+// ------------------------------------
 // ------------------------------------
 
 const formCreatePost = document.getElementById('form-create-post');
