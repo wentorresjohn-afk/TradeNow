@@ -1,5 +1,4 @@
-const API_URL = 'https://tradenow-437n.onrender.com/api'
-
+const API_URL = 'https://tradenow-437n.onrender.com/api';
 
 // Elementos de la Interfaz de Usuario (UI)
 const tabLogin = document.getElementById('tab-login');
@@ -32,7 +31,7 @@ if (tabLogin && tabRegister && formLogin && formRegister) {
     });
 
 } else {
-    console.error("Error crítico: No se encontraron todos los IDs requeridos en el HTML (tab-login, tab-register, form-login, form-register).");
+    console.error("Error crítico: No se encontraron todos los IDs requeridos en el HTML.");
 }
 
 // ==========================================
@@ -44,7 +43,6 @@ function showAlert(messages, isSuccess = false) {
     alertContainer.innerHTML = '';
     alertContainer.classList.remove('hidden', 'error', 'success');
     
-    // Aplicar clase según el tipo de alerta
     if (isSuccess) {
         alertContainer.classList.add('success');
     } else {
@@ -63,7 +61,6 @@ function showAlert(messages, isSuccess = false) {
         });
         alertContainer.appendChild(ul);
     } else {
-        // Si es un string simple
         alertContainer.textContent = messages;
     }
 }
@@ -86,10 +83,9 @@ formLogin.addEventListener('submit', async (e) => {
             body: JSON.stringify(loginData)
         });
 
-        // Validar que el backend responda con JSON y no con un documento HTML de error
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            throw new Error("El servidor respondió con un formato inesperado (HTML/Texto). Verifica que la ruta '/api/aut/login' esté bien mapeada.");
+            throw new Error("El servidor respondió con un formato inesperado (HTML/Texto). Asegúrate de que el backend en Render esté despierto.");
         }
 
         const data = await response.json();
@@ -99,7 +95,6 @@ formLogin.addEventListener('submit', async (e) => {
             throw new Error(JSON.stringify(errorMsg));
         }
 
-        // Guardar sesión local
         localStorage.setItem('userId', data.id);
         localStorage.setItem('userName', data.name || 'Usuario');
         
@@ -122,11 +117,12 @@ formLogin.addEventListener('submit', async (e) => {
 formRegister.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // Construir el JSON con los nombres exactos de las propiedades de tu UserRegistrationDTO
     const regData = {
         name: document.getElementById('reg-name').value,
         email: document.getElementById('reg-email').value,
         password: document.getElementById('reg-password').value,
-        phone: document.getElementById('reg-phone').value
+        geographicZone: document.getElementById('reg-zone').value
     };
 
     try {
@@ -136,15 +132,15 @@ formRegister.addEventListener('submit', async (e) => {
             body: JSON.stringify(regData)
         });
 
-        // Validar que el backend responda con JSON y no con un documento HTML de error
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            throw new Error("El servidor respondió con un formato inesperado (HTML/Texto). Verifica el mapeo de '/api/aut/register' en tu Java.");
+            throw new Error("El servidor respondió con un formato inesperado (HTML/Texto).");
         }
 
         const data = await response.json();
 
-        if (response.status === 400 || !response.ok) {
+        if (!response.ok) {
+            // Captura la lista de errores de validación de Spring (ej: si la contraseña no cumple el patrón)
             const errorMsg = Array.isArray(data) ? data : (data.message || 'Error en el registro');
             throw new Error(JSON.stringify(errorMsg));
         }
@@ -152,7 +148,6 @@ formRegister.addEventListener('submit', async (e) => {
         showAlert('Registro completado con éxito. Ya puedes iniciar sesión.', true);
         formRegister.reset();
         
-        // Retornar automáticamente a la pestaña de Login tras registrarse
         setTimeout(() => {
             tabLogin.click();
         }, 2000);

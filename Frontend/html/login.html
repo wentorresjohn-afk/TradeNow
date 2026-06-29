@@ -3,54 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeNow - Conectar</title>
-    <link rel="stylesheet" href="css/auth.css">
+    <title>TradeNow - Autenticación</title>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --border: #d1d5db;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 440px;
+            padding: 32px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .brand h1 {
+            color: #4f46e5;
+            margin: 0 0 4px 0;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .brand p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #4f46e5;
+            border-bottom: 3px solid #4f46e5;
+            margin-bottom: -2px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Sistema de Alertas */
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .alert.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert.success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
 
     <div class="auth-container">
-        <div class="auth-header">
+        <div class="brand">
             <h1>TradeNow</h1>
             <p>Plataforma de Trueques e Intercambios</p>
         </div>
 
-        <div class="tabs-container">
-            <button id="tab-login" class="tab-btn active">Iniciar Sesión</button>
-            <button id="tab-register" class="tab-btn">Registrarse</button>
+        <div class="tabs">
+            <div id="tab-login" class="tab active">Iniciar Sesión</div>
+            <div id="tab-register" class="tab">Registrarse</div>
         </div>
 
-        <div id="alert-container" class="alert-box hidden"></div>
+        <div id="alert-container" class="alert hidden"></div>
 
-        <form id="form-login" class="auth-form">
+        <form id="form-login">
             <div class="form-group">
                 <label for="login-email">Correo Electrónico</label>
-                <input type="email" id="login-email" required>
+                <type-input><input type="email" id="login-email" required placeholder="ejemplo@correo.com"></type-input>
             </div>
             <div class="form-group">
                 <label for="login-password">Contraseña</label>
-                <input type="password" id="login-password" required>
+                <type-input><input type="password" id="login-password" required placeholder="••••••••"></type-input>
             </div>
-            <button type="submit" class="btn btn-submit btn-login">Ingresar</button>
+            <button type="submit" class="btn-submit">Ingresar</button>
         </form>
 
-        <form id="form-register" class="auth-form hidden">
+        <form id="form-register" class="hidden">
             <div class="form-group">
                 <label for="reg-name">Nombre Completo</label>
-                <input type="text" id="reg-name" required>
+                <type-input><input type="text" id="reg-name" required placeholder="John Wen Torres"></type-input>
             </div>
             <div class="form-group">
                 <label for="reg-email">Correo Electrónico</label>
-                <input type="email" id="reg-email" required>
+                <type-input><input type="email" id="reg-email" required placeholder="wentorresjohn@gmail.com"></type-input>
             </div>
             <div class="form-group">
                 <label for="reg-password">Contraseña</label>
-                <input type="password" id="reg-password" required>
+                <type-input><input type="password" id="reg-password" required placeholder="Mínimo 8 caracteres (A-Z, a-z, 0-9, sp)"></type-input>
             </div>
             <div class="form-group">
-                <label for="reg-phone">Teléfono</label>
-                <input type="text" id="reg-phone">
+                <label for="reg-zone">Zona Geográfica</label>
+                <select id="reg-zone" required>
+                    <option value="" disabled selected>Selecciona tu ubicación</option>
+                    <option value="San José">San José</option>
+                    <option value="Alajuela">Alajuela</option>
+                    <option value="Cartago">Cartago</option>
+                    <option value="Heredia">Heredia</option>
+                    <option value="Guanacaste">Guanacaste</option>
+                    <option value="Puntarenas">Puntarenas</option>
+                    <option value="Limón">Limón</option>
+                </select>
             </div>
-            <button type="submit" class="btn btn-submit btn-register">Crear Cuenta</button>
+            <button type="submit" class="btn-submit">Crear Cuenta</button>
         </form>
     </div>
 

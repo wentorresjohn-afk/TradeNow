@@ -20,6 +20,7 @@ public class UserRegistrationDTO {
     )
     private String password;
 
+
     @NotBlank(message = "Geographic zone is required")
     private String geographicZone;
 
