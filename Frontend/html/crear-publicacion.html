@@ -59,11 +59,7 @@
 
         .form-group textarea { resize: vertical; min-height: 100px; }
 
-        /* Estilos de 2 columnas para campos cortos */
-        .row {
-            display: flex;
-            gap: 16px;
-        }
+        .row { display: flex; gap: 16px; }
         .row .form-group { flex: 1; }
 
         .btn-submit {
@@ -111,6 +107,11 @@
             </div>
 
             <div class="form-group">
+                <label for="post-image-url">URL de la Imagen del Artículo</label>
+                <input type="url" id="post-image-url" required placeholder="https://ejemplo.com/foto-articulo.jpg">
+            </div>
+
+            <div class="form-group">
                 <label for="post-description">Descripción detallada</label>
                 <textarea id="post-description" required placeholder="Describe el estado, detalles..."></textarea>
             </div>
@@ -125,7 +126,6 @@
                     <label for="post-type">Tipo de Publicación</label>
                     <select id="post-type" required>
                         <option value="" disabled selected>Selecciona...</option>
-                        <!-- IMPORTANTE: Estos valores deben coincidir exactamente con tu enum PublicationType de Java -->
                         <option value="TRUEQUE">Trueque</option>
                         <option value="VENTA">Venta</option>
                     </select>
@@ -141,7 +141,6 @@
                     <label for="post-category">Categoría</label>
                     <select id="post-category" required>
                         <option value="" disabled selected>Selecciona...</option>
-                        <!-- Usamos IDs numéricos como espera el backend -->
                         <option value="1">Tecnología</option>
                         <option value="2">Hogar</option>
                         <option value="3">Deportes</option>
@@ -152,7 +151,6 @@
                     <label for="post-zone">Zona</label>
                     <select id="post-zone" required>
                         <option value="" disabled selected>Selecciona...</option>
-                        <!-- Usamos IDs numéricos -->
                         <option value="1">San José</option>
                         <option value="2">Alajuela</option>
                         <option value="3">Cartago</option>
