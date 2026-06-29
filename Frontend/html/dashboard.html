@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeNow - Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <h2 class="nav-logo">TradeNow</h2>
+        <div class="nav-user-zone">
+            <span id="user-display">Cargando...</span>
+            <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <h3>Filtrar Publicaciones</h3>
+            <form id="form-filter">
+                <div class="filter-group">
+                    <label>Categoría (ID)</label>
+                    <input type="number" id="filter-categoria">
+                </div>
+                <div class="filter-group">
+                    <label>Zona (ID)</label>
+                    <input type="number" id="filter-zona">
+                </div>
+                <div class="filter-group">
+                    <label>Tipo de Publicación</label>
+                    <select id="filter-tipo">
+                        <option value="">Todos</option>
+                        <option value="PRODUCTO">Producto</option>
+                        <option value="SERVICIO">Servicio</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn-action btn-primary">Filtrar</button>
+                    <button type="button" id="btn-reset-filter" class="btn-action btn-secondary">Limpiar</button>
+                </div>
+            </form>
+        </aside>
+
+        <section class="main-content">
+            <h3>Publicaciones Disponibles</h3>
+            <div id="posts-container" class="posts-grid">
+                </div>
+        </section>
+    </div>
+
+    <div id="proposal-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>Enviar Propuesta de Trueque</h3>
+            <p id="modal-post-title"></p>
+            
+            <form id="form-proposal">
+                <input type="hidden" id="modal-post-id">
+                <div class="filter-group">
+                    <label>¿Qué ofreces a cambio?</label>
+                    <textarea id="proposal-description" rows="4" required placeholder="Describe las cosas o servicios para el trueque..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="btn-close-modal" class="btn-action btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-action btn-primary">Enviar Propuesta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

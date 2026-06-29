@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeNow - Reportes del Sistema</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .report-box { background: white; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 24px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.9rem; }
+        th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; }
+        th { background-color: #f8fafc; font-weight: 600; }
+    </style>
+</head>
+<body style="background-color: #f1f5f9;">
+
+    <nav class="navbar">
+        <h2 class="nav-logo">TradeNow - Panel de Control Administrativo</h2>
+        <button onclick="window.location.href='dashboard.html'" class="btn-action btn-secondary">Regresar</button>
+    </nav>
+
+    <main style="max-w: 1000px; margin: 32px auto; padding: 0 24px;">
+        
+        <div class="report-box">
+            <h3>Categorías más Intercambiadas</h3>
+            <div style="display:flex; gap:10px; margin-bottom:12px; align-items: flex-end;">
+                <div><label style="font-size:0.8rem;">Desde:</label><input type="date" id="rep-start"></div>
+                <div><label style="font-size:0.8rem;">Hasta:</label><input type="date" id="rep-end"></div>
+                <button onclick="loadCategoryReport()" class="btn-action btn-primary">Generar</button>
+            </div>
+            <table id="table-categories">
+                <thead><tr><th>Categoría ID</th><th>Total Intercambios</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="report-box">
+            <h3>Usuarios Más Activos</h3>
+            <table id="table-users">
+                <thead><tr><th>Usuario ID</th><th>Nombre</th><th>Cantidad Publicaciones/Trades</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="report-box">
+            <h3>Valor Total Estimado en Plataforma</h3>
+            <p id="txt-total-value" style="font-size: 1.5rem; font-weight: bold; color: #4f46e5; margin-top: 10px;">💵 0.00</p>
+        </div>
+    </main>
+
+    <script>
+        async function loadCategoryReport() {
+            const start = document.getElementById('rep-start').value;
+            const end = document.getElementById('rep-end').value;
+            if(!start || !end) return alert('Defina el rango de fechas');
+
+            const res = await fetch(`/api/reportes/categorias?startDate=${start}&endDate=${end}`);
+            if (res.ok) {
+                const data = await res.json();
+                const tbody = document.querySelector('#table-categories tbody');
+                tbody.innerHTML = '';
+                data.forEach(item => {
+                    tbody.innerHTML += `<tr><td>${item.categoryId || item.name}</td><td>${item.count}</td></tr>`;
+                });
+            }
+        }
+
+        async function loadGeneralReports() {
+            // Usuarios activos
+            const resUsers = await fetch('/api/reportes/usuarios-activos');
+            if(resUsers.ok) {
+                const users = await resUsers.json();
+                const tbody = document.querySelector('#table-users tbody');
+                tbody.innerHTML = '';
+                users.forEach(u => {
+                    tbody.innerHTML += `<tr><td>${u.userId}</td><td>${u.name}</td><td>${u.activityCount}</td></tr>`;
+                });
+            }
+
+            // Valor global
+            const resValue = await fetch('/api/reportes/valor-total');
+            if(resValue.ok) {
+                const val = await resValue.json();
+                document.getElementById('txt-total-value').textContent = `¢${val.totalFormatted || val.amount}`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadGeneralReports);
+    </script>
+</body>
+</html>

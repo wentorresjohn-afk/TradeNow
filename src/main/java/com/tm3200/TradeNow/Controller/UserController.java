@@ -22,12 +22,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("aut/register")
+    @PostMapping("/aut/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationDTO dto, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();

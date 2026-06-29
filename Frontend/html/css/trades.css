@@ -1,0 +1,120 @@
+/* Variables compartidas de la aplicación */
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --surface-card: #ffffff;
+    --border-color: #e2e8f0;
+    --text-main: #334155;
+    --text-muted: #64748b;
+    
+    /* Estados de los intercambios */
+    --color-progreso-bg: #e0f2fe;
+    --color-progreso-text: #0369a1;
+    --color-completado-bg: #d1fae5;
+    --color-completado-text: #065f46;
+}
+
+.trades-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 900px;
+    margin: 32px auto;
+    padding: 0 24px;
+}
+
+.trades-grid h3 {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    font-weight: 700;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* Tarjeta de cada intercambio */
+.trade-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trade-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.trade-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.trade-card-header strong {
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+/* Etiquetas dinámicas de estado */
+.badge {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-progreso {
+    background-color: var(--color-progreso-bg);
+    color: var(--color-progreso-text);
+}
+
+.badge-completado {
+    background-color: var(--color-completado-bg);
+    color: var(--color-completado-text);
+}
+
+/* Sección de fechas y acciones del formulario de entrega */
+.delivery-form-inline {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border-color);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+}
+
+.delivery-form-inline .filter-group {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.delivery-form-inline label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.delivery-form-inline input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    outline: none;
+    background-color: #f8fafc;
+}
+
+.delivery-form-inline input[type="date"]:focus {
+    border-color: var(--primary-color);
+}

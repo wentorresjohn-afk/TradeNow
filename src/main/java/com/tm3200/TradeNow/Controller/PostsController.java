@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/publicaciones")
+@CrossOrigin(origins = "*")
 public class PostsController
 {
     @Autowired

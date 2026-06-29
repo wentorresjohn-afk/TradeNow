@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeNow - Mis Propuestas</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/propuestas.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <h2 class="nav-logo" onclick="window.location.href='dashboard.html'" style="cursor:pointer;">TradeNow</h2>
+        <div class="nav-user-zone">
+            <button onclick="window.location.href='dashboard.html'" class="btn-action btn-secondary">Volver al Dashboard</button>
+        </div>
+    </nav>
+
+    <main class="propuestas-layout">
+        <section class="propuestas-section">
+            <h3>Propuestas que has Enviado</h3>
+            <div id="enviadas-container" class="propuestas-list">
+                </div>
+        </section>
+
+        <section class="propuestas-section">
+            <h3>Propuestas Recibidas (Tus Productos)</h3>
+            <div id="recibidas-container" class="propuestas-list">
+                </div>
+        </section>
+    </main>
+
+    <div id="respond-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>Responder a la Propuesta</h3>
+            <p id="respond-modal-text" style="font-size: 0.9rem; margin-bottom: 16px; color: #475569;"></p>
+            
+            <form id="form-respond-proposal">
+                <input type="hidden" id="respond-proposal-id">
+                <div class="filter-group">
+                    <label>Acción</label>
+                    <select id="respond-action" required>
+                        <option value="ACEPTAR">Aceptar Propuesta</option>
+                        <option value="RECHAZAR">Rechazar Propuesta</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="btn-close-respond" class="btn-action btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-action btn-primary">Enviar Respuesta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/propuestas.js"></script>
+</body>
+</html>
