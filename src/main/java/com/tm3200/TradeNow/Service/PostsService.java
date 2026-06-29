@@ -49,6 +49,16 @@ public class PostsService
     public Posts addPost(PostsDTO dto) {
         // 1. Validaciones básicas de tipo
         // Cambia esto en addPost:
+        
+            // ESTO IMPRIMIRÁ LO QUE LLEGA DESDE EL FORMULARIO EN LOS LOGS DE RENDER
+            System.out.println("DEBUG: DTO Recibido -> Tipo: " + dto.getType() +
+                    ", Valor: " + dto.getEstimatedValue() +
+                    ", UserID: " + dto.getUserId() +
+                    ", CatID: " + dto.getCategoryId() +
+                    ", ZonaID: " + dto.getZoneId());
+
+            // ... el resto de tu código
+
         if (dto.getType() == PublicationType.OFFER && dto.getEstimatedValue() == null) {
             // Solo rechaza si es estrictamente NULL, permite el 0 si el usuario no puso valor
             return null;
