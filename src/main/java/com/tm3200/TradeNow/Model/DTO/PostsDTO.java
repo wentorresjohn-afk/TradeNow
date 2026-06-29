@@ -19,7 +19,7 @@ public class PostsDTO
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    private BigDecimal estimatedValue;
+    private Double estimatedValue;
     private String exchangeFor;
 
     private Integer userId;
@@ -31,7 +31,7 @@ public class PostsDTO
     {
     }
 
-    public PostsDTO(PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, Integer userId, Integer categoryId, Integer zoneId, String imageUrl) {
+    public PostsDTO(PublicationType type, String title, String description, Double estimatedValue, String exchangeFor, Integer userId, Integer categoryId, Integer zoneId, String imageUrl) {
         this.type = type;
         this.title = title;
         this.description = description;
@@ -79,11 +79,12 @@ public class PostsDTO
         this.description = description;
     }
 
-    public BigDecimal getEstimatedValue() {
+
+    public Double getEstimatedValue() {
         return estimatedValue;
     }
 
-    public void setEstimatedValue(BigDecimal estimatedValue) {
+    public void setEstimatedValue(Double estimatedValue) {
         this.estimatedValue = estimatedValue;
     }
 

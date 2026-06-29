@@ -14,6 +14,7 @@ import com.tm3200.TradeNow.Repository.ZoneJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +64,11 @@ public class PostsService
         posts.setType(dto.getType());
         posts.setTitle(dto.getTitle());
         posts.setDescription(dto.getDescription());
-        posts.setEstimatedValue(dto.getEstimatedValue());
+        if (dto.getEstimatedValue() != null) {
+            posts.setEstimatedValue(BigDecimal.valueOf(dto.getEstimatedValue()));
+        } else {
+            posts.setEstimatedValue(BigDecimal.ZERO); // O null, según lo que necesites
+        }
         posts.setExchangeFor(dto.getExchangeFor());
         posts.setStatus(PublicationStatus.PENDING);
         posts.setImageUrl(dto.getImageUrl());
@@ -105,7 +110,11 @@ public class PostsService
         posts.setType(dto.getType());
         posts.setTitle(dto.getTitle());
         posts.setDescription(dto.getDescription());
-        posts.setEstimatedValue(dto.getEstimatedValue());
+        if (dto.getEstimatedValue() != null) {
+            posts.setEstimatedValue(BigDecimal.valueOf(dto.getEstimatedValue()));
+        } else {
+            posts.setEstimatedValue(BigDecimal.ZERO); // O null, según lo que necesites
+        }
         posts.setExchangeFor(dto.getExchangeFor());
         posts.setImageUrl(dto.getImageUrl());
 
