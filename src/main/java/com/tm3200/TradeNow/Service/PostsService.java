@@ -96,16 +96,23 @@ public class PostsService
         {
             return null;
         }
+        // CAMBIO TEMPORAL: Ponemos logs para ver TODO
+        System.out.println("DEBUG DTO: " + dto.getType() + " | " + dto.getEstimatedValue() + " | " + dto.getUserId());
 
-        if (dto.getType() == PublicationType.OFFER && dto.getEstimatedValue()== null)
-        {
-            return null;
-        }//Fin del if
+        // Si esto falla, en lugar de retornar null, lanzamos una excepción con el error
+        if (dto.getType() == PublicationType.OFFER && (dto.getEstimatedValue() == null || dto.getEstimatedValue() == 0)) {
+            throw new RuntimeException("Error en validación: El valor de la oferta es inválido o nulo");
+        }
 
-        if (dto.getType() == PublicationType.SEARCH && (dto.getExchangeFor()==null || dto.getExchangeFor().isBlank()))
-        {
-            return null;
-        }//Fin del if
+//        if (dto.getType() == PublicationType.OFFER && dto.getEstimatedValue()== null)
+//        {
+//            return null;
+//        }//Fin del if
+//
+//        if (dto.getType() == PublicationType.SEARCH && (dto.getExchangeFor()==null || dto.getExchangeFor().isBlank()))
+//        {
+//            return null;
+//        }//Fin del if
 
         posts.setType(dto.getType());
         posts.setTitle(dto.getTitle());
