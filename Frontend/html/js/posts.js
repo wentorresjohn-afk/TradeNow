@@ -1,4 +1,11 @@
 const API_URL = 'https://tradenow-437n.onrender.com/api';
+
+// --- CONFIGURACIÓN DE CLOUDINARY ---
+// Sustituye estos valores con los de tu cuenta gratuita de Cloudinary
+const CLOUD_NAME = "tu_cloud_name_aqui"; 
+const UPLOAD_PRESET = "tu_upload_preset_aqui"; 
+// ------------------------------------
+
 const formCreatePost = document.getElementById('form-create-post');
 const alertContainer = document.getElementById('post-alert');
 
@@ -12,63 +19,74 @@ if (formCreatePost) {
     formCreatePost.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // 1. Validar sesión del usuario desde el almacenamiento local
+        // 1. Obtener archivo y validar sesión
+        const fileInput = document.getElementById('post-image-file');
+        const file = fileInput.files[0];
         const userId = localStorage.getItem('userId');
         
         if (!userId) {
             showAlert('Debes iniciar sesión para crear una publicación.');
-            setTimeout(() => window.location.href = 'login.html', 2000);
             return;
         }
 
-        // 2. Construir el DTO respetando los tipos y nombres exactos del backend (PostsDTO)
-        // Nota: Asegúrate de que los valores numéricos vengan como enteros
-        const postData = {
-            type: document.getElementById('post-type').value, // STRING (Enum en Java)
-            title: document.getElementById('post-title').value,
-            description: document.getElementById('post-description').value,
-            estimatedValue: parseFloat(document.getElementById('post-value').value) || 0.0,
-            exchangeFor: document.getElementById('post-exchange-for').value,
-            imageUrl: document.getElementById('post-image-url').value, // Nuevo campo
-            userId: parseInt(userId),
-            categoryId: parseInt(document.getElementById('post-category').value),
-            zoneId: parseInt(document.getElementById('post-zone').value)
-        };
+        if (!file) {
+            showAlert('Por favor, selecciona una imagen para el artículo.');
+            return;
+        }
 
         try {
-            // 3. Petición al endpoint: /api/publicaciones/new
+            showAlert("Procesando imagen y subiendo a la nube...", true);
+
+            // 2. Subir imagen a Cloudinary
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            formData.append("cloud_name", CLOUD_NAME);
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) throw new Error("Error al subir la imagen a la nube.");
+            
+            const imageData = await res.json();
+            const imageUrl = imageData.secure_url; // Esta es la URL que tu Java guardará
+
+            // 3. Construir el DTO completo para tu backend
+            const postData = {
+                type: document.getElementById('post-type').value,
+                title: document.getElementById('post-title').value,
+                description: document.getElementById('post-description').value,
+                estimatedValue: parseFloat(document.getElementById('post-value').value) || 0.0,
+                exchangeFor: document.getElementById('post-exchange-for').value,
+                imageUrl: imageUrl, // Aquí enviamos la URL recibida
+                userId: parseInt(userId),
+                categoryId: parseInt(document.getElementById('post-category').value),
+                zoneId: parseInt(document.getElementById('post-zone').value)
+            };
+
+            // 4. Enviar datos a tu backend Java
             const response = await fetch(`${API_URL}/publicaciones/new`, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json' 
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(postData)
             });
 
-            // 4. Procesar respuesta
-            const contentType = response.headers.get("content-type");
-            let data;
-            
-            if (contentType && contentType.includes("application/json")) {
-                data = await response.json();
-            } else {
-                data = await response.text();
-            }
+            const responseData = await response.text();
 
             if (!response.ok) {
-                // Manejar errores de validación (BindingResult)
-                const errorMsg = Array.isArray(data) ? data.join(', ') : (data || 'Error al crear la publicación');
-                throw new Error(errorMsg);
+                throw new Error(responseData || 'Error al guardar la publicación en la base de datos');
             }
 
             showAlert('¡Publicación creada con éxito!', true);
             formCreatePost.reset();
             
-            // Redirigir al dashboard tras 2 segundos
+            // Redirigir al dashboard
             setTimeout(() => window.location.href = 'dashboard.html', 2000);
 
         } catch (error) {
-            showAlert(error.message);
+            showAlert("Error: " + error.message);
         }
     });
 }
