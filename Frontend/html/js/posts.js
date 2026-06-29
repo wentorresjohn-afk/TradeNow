@@ -50,12 +50,12 @@ if (formCreatePost) {
             const imageData = await res.json();
             const imageUrl = imageData.secure_url;
 
-            // 3. Construir el objeto postData (debe coincidir con tu PostsDTO en Java)
+            // 3. Construir el objeto postData (coincide con tu PostsDTO de Java)
             const postData = {
                 title: document.getElementById('post-title').value,
                 description: document.getElementById('post-description').value,
                 imageUrl: imageUrl,
-                type: document.getElementById('post-type').value, // 'OFFER' o 'SEARCH'
+                type: document.getElementById('post-type').value, 
                 estimatedValue: parseFloat(document.getElementById('post-value').value) || 0.0,
                 exchangeFor: document.getElementById('post-exchange-for').value,
                 userId: parseInt(userId),
@@ -63,7 +63,7 @@ if (formCreatePost) {
                 zoneId: parseInt(document.getElementById('post-zone').value)
             };
 
-            // 4. Enviar datos al backend Java
+            // 4. Enviar datos al backend Java (Ruta corregida a /api/publicaciones/new)
             showAlert("Guardando publicación en TradeNow...", true);
             const response = await fetch(`${API_URL}/publicaciones/new`, {
                 method: 'POST',
@@ -80,7 +80,7 @@ if (formCreatePost) {
             showAlert('¡Publicación creada con éxito!', true);
             formCreatePost.reset();
             
-            // Redirigir al dashboard tras 2 segundos
+            // Redirigir tras éxito
             setTimeout(() => window.location.href = 'dashboard.html', 2000);
 
         } catch (error) {
