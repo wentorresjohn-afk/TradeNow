@@ -1,5 +1,6 @@
 package com.tm3200.TradeNow.Model.DTO;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import jakarta.validation.constraints.NotBlank;
@@ -41,13 +42,25 @@ public class PostsDTO
         this.zoneId = zoneId;
         this.imageUrl = imageUrl;
     }
+    // ESTO ES LO QUE SOLUCIONA EL ERROR 400:
+    @JsonCreator
+    public static PublicationType fromString(String value) {
+        return PublicationType.valueOf(value.toUpperCase());
+    }
+
+    // Mantenemos este setter único y funcional
+    public void setType(Object value) {
+        if (value instanceof String) {
+            // Si llega como String (JSON), lo convertimos al Enum
+            this.type = PublicationType.valueOf(((String) value).toUpperCase());
+        } else if (value instanceof PublicationType) {
+            // Si ya llega como Enum, lo asignamos directo
+            this.type = (PublicationType) value;
+        }
+    }
 
     public PublicationType getType() {
         return type;
-    }
-
-    public void setType(PublicationType type) {
-        this.type = type;
     }
 
     public String getTitle() {
