@@ -1,5 +1,6 @@
 package com.tm3200.TradeNow.Model.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 public class PostsDTO
 {
     @NotNull(message = "El tipo es obligatorio")
+    @JsonProperty("type")
     private PublicationType type;
     @NotBlank(message = "El titulo es obligatorio")
     private String title;
