@@ -66,6 +66,7 @@ public class PostsService
         posts.setEstimatedValue(dto.getEstimatedValue());
         posts.setExchangeFor(dto.getExchangeFor());
         posts.setStatus(PublicationStatus.PENDING);
+        posts.setImageUrl(dto.getImageUrl());
 
         User user = userJpaRepository.findById(dto.getUserId()).orElse(null);
         if (user == null) return null;
@@ -106,6 +107,7 @@ public class PostsService
         posts.setDescription(dto.getDescription());
         posts.setEstimatedValue(dto.getEstimatedValue());
         posts.setExchangeFor(dto.getExchangeFor());
+        posts.setImageUrl(dto.getImageUrl());
 
         User user = userJpaRepository.findById(dto.getUserId()).orElse(null);
         if (user == null) return null;

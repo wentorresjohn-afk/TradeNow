@@ -22,12 +22,13 @@ public class PostsDTO
     private Integer userId;
     private Integer categoryId;
     private Integer zoneId;
+    private String imageUrl;
 
     public PostsDTO()
     {
     }
 
-    public PostsDTO(PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, Integer userId, Integer categoryId, Integer zoneId) {
+    public PostsDTO(PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, Integer userId, Integer categoryId, Integer zoneId, String imageUrl) {
         this.type = type;
         this.title = title;
         this.description = description;
@@ -36,6 +37,7 @@ public class PostsDTO
         this.userId = userId;
         this.categoryId = categoryId;
         this.zoneId = zoneId;
+        this.imageUrl = imageUrl;
     }
 
     public PublicationType getType() {
@@ -100,5 +102,13 @@ public class PostsDTO
 
     public void setZoneId(Integer zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

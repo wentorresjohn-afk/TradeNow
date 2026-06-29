@@ -22,6 +22,7 @@ public class Posts
     private String description;
     private BigDecimal estimatedValue;
     private String exchangeFor;
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     private PublicationStatus status;
@@ -43,13 +44,14 @@ public class Posts
     {
     }
 
-    public Posts(Integer id, PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, PublicationStatus status, User user, Category category, Zone zone) {
+    public Posts(Integer id, PublicationType type, String title, String description, BigDecimal estimatedValue, String exchangeFor, String imageUrl, PublicationStatus status, User user, Category category, Zone zone) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.description = description;
         this.estimatedValue = estimatedValue;
         this.exchangeFor = exchangeFor;
+        this.imageUrl = imageUrl;
         this.status = status;
         this.user = user;
         this.category = category;
@@ -134,5 +136,13 @@ public class Posts
 
     public void setZone(Zone zone) {
         this.zone = zone;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
