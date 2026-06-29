@@ -6,7 +6,6 @@ const UPLOAD_PRESET = "mi_preset_tradenow";
 const formCreatePost = document.getElementById('form-create-post');
 const alertContainer = document.getElementById('post-alert');
 
-// Función para mostrar alertas en el UI
 function showAlert(message, isSuccess = false) {
     alertContainer.textContent = message;
     alertContainer.className = `alert ${isSuccess ? 'success' : 'error'}`;
@@ -17,7 +16,6 @@ if (formCreatePost) {
     formCreatePost.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // 1. Capturar elementos y validar sesión
         const fileInput = document.getElementById('post-image-file');
         const file = fileInput.files[0];
         const userId = localStorage.getItem('userId');
@@ -35,7 +33,7 @@ if (formCreatePost) {
         try {
             showAlert("Subiendo imagen a la nube...", true);
 
-            // 2. Subir imagen a Cloudinary
+            // 1. Subir imagen a Cloudinary
             const formData = new FormData();
             formData.append("file", file);
             formData.append("upload_preset", UPLOAD_PRESET);
@@ -50,37 +48,37 @@ if (formCreatePost) {
             const imageData = await res.json();
             const imageUrl = imageData.secure_url;
 
-            // 3. Construir el objeto postData (coincide con tu PostsDTO de Java)
+            // 2. Preparar datos con validación estricta
+            const rawValue = document.getElementById('post-value').value;
             const postData = {
                 title: document.getElementById('post-title').value,
                 description: document.getElementById('post-description').value,
                 imageUrl: imageUrl,
-                type: document.getElementById('post-type').value, 
-                estimatedValue: parseFloat(document.getElementById('post-value').value) || 0.0,
+                type: document.getElementById('post-type').value, // Asegúrate que sea 'OFFER' o 'SEARCH'
+                estimatedValue: rawValue && rawValue !== "" ? parseFloat(rawValue) : 0.0,
                 exchangeFor: document.getElementById('post-exchange-for').value,
                 userId: parseInt(userId),
                 categoryId: parseInt(document.getElementById('post-category').value),
                 zoneId: parseInt(document.getElementById('post-zone').value)
             };
 
-            // 4. Enviar datos al backend Java (Ruta corregida a /api/publicaciones/new)
-            showAlert("Guardando publicación en TradeNow...", true);
+            // 3. Enviar datos al backend
+            showAlert("Guardando publicación...", true);
             const response = await fetch(`${API_URL}/publicaciones/new`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(postData)
             });
 
-            // Capturar errores del backend
             const responseText = await response.text();
+            
             if (!response.ok) {
-                throw new Error(responseText || 'Error al guardar en base de datos');
+                // Aquí el backend nos dice exactamente qué validación falló
+                throw new Error(responseText || 'Error en el servidor');
             }
 
             showAlert('¡Publicación creada con éxito!', true);
             formCreatePost.reset();
-            
-            // Redirigir tras éxito
             setTimeout(() => window.location.href = 'dashboard.html', 2000);
 
         } catch (error) {

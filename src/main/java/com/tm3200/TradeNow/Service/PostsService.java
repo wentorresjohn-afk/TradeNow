@@ -48,7 +48,9 @@ public class PostsService
     //Metodo que crea una nueva publicación
     public Posts addPost(PostsDTO dto) {
         // 1. Validaciones básicas de tipo
-        if (dto.getType() == PublicationType.OFFER && (dto.getEstimatedValue() == null || dto.getEstimatedValue() == 0)) {
+        // Cambia esto en addPost:
+        if (dto.getType() == PublicationType.OFFER && dto.getEstimatedValue() == null) {
+            // Solo rechaza si es estrictamente NULL, permite el 0 si el usuario no puso valor
             return null;
         }
         if (dto.getType() == PublicationType.SEARCH && (dto.getExchangeFor() == null || dto.getExchangeFor().isBlank())) {
