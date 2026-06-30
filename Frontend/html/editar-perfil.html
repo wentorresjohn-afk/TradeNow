@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeNow - Editar Perfil</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --success-hover: #059669;
+            --bg-body: #f3f4f6;
+            --bg-navbar: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --danger: #ef4444;
+            --border: #d1d5db;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* NAVBAR (igual al resto del sitio) */
+        .navbar {
+            background-color: var(--bg-navbar);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .nav-item a:hover {
+            color: var(--primary);
+            background-color: #f3f4f6;
+        }
+
+        .nav-item.active a {
+            color: var(--primary);
+            background-color: #eef2ff;
+        }
+
+        .nav-item.btn-action a {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .nav-item.btn-action a:hover {
+            background-color: var(--success-hover);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .welcome-msg {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #fef2f2;
+        }
+
+        /* FORM CONTAINER */
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 32px;
+            margin: 40px auto;
+        }
+
+        .header {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+
+        .header h2 {
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .header p {
+            margin: 4px 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* PREVIEW DE FOTO */
+        .photo-preview-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #e5e7eb;
+            margin-bottom: 12px;
+            border: 2px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-cancel {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+
+        .alert.success {
+            background-color: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand">TradeNow</a>
+
+        <ul class="navbar-menu">
+            <li class="nav-item"><a href="dashboard.html">Ver Publicaciones</a></li>
+            <li class="nav-item active"><a href="perfil.html">Mi Perfil</a></li>
+            <li class="nav-item"><a href="historial.html">Historial</a></li>
+            <li class="nav-item btn-action"><a href="crear-publicacion.html">+ Crear Publicación</a></li>
+        </ul>
+
+        <div class="user-section">
+            <span id="user-display-name" class="welcome-msg">Cargando...</span>
+            <button id="btn-session-logout" class="btn-logout">Salir</button>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <div class="header">
+            <h2>Editar Perfil</h2>
+            <p>Actualiza tu foto, descripción y zona geográfica.</p>
+        </div>
+
+        <div id="edit-alert" class="alert"></div>
+
+        <form id="form-edit-profile">
+
+            <div class="photo-preview-wrapper">
+                <img id="photo-preview" class="photo-preview" src="https://via.placeholder.com/100" alt="Foto de perfil">
+                <label for="profile-photo-file" style="cursor: pointer; color: var(--primary); font-size: 0.85rem; font-weight: 500;">
+                    Cambiar foto
+                </label>
+                <input type="file" id="profile-photo-file" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="form-group">
+                <label for="profile-description">Descripción</label>
+                <textarea id="profile-description" placeholder="Cuéntanos un poco sobre ti..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="profile-zone">Zona Geográfica</label>
+                <input type="text" id="profile-zone" placeholder="Ej. San José, Costa Rica">
+            </div>
+
+            <button type="submit" class="btn-submit">Guardar Cambios</button>
+            <a href="perfil.html" class="btn-cancel">Cancelar y volver al perfil</a>
+        </form>
+    </div>
+
+    <script src="js/editar-perfil.js"></script>
+</body>
+</html>
