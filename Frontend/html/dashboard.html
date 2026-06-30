@@ -65,7 +65,6 @@
             transition: all 0.2s;
         }
 
-        /* Estado activo y efectos hover */
         .nav-item a:hover {
             color: var(--primary);
             background-color: #f3f4f6;
@@ -76,7 +75,6 @@
             background-color: #eef2ff;
         }
 
-        /* Botón de acción destacado dentro de la barra */
         .nav-item.btn-action a {
             background-color: var(--success);
             color: white;
@@ -86,7 +84,6 @@
             background-color: var(--success-hover);
         }
 
-        /* Información del usuario y botón de salida */
         .user-section {
             display: flex;
             align-items: center;
@@ -127,6 +124,88 @@
             padding: 24px;
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+
+        /* GRILLA DE PUBLICACIONES */
+        .posts-section h3 {
+            margin-bottom: 16px;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .post-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background-color: #e5e7eb;
+        }
+
+        .post-tag {
+            display: inline-block;
+            background-color: #eef2ff;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 999px;
+            margin-bottom: 8px;
+        }
+
+        .post-card h4 {
+            margin: 0 0 6px 0;
+            font-size: 1rem;
+        }
+
+        .post-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .btn-action.btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-action.btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .empty-state, .loading-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 0;
         }
     </style>
 </head>
@@ -153,35 +232,15 @@
             <h2>¡Hola de nuevo!</h2>
             <p>Selecciona una opción de la barra superior para empezar a explorar, intercambiar o gestionar tus ofertas.</p>
         </div>
+
+        <section class="posts-section">
+            <h3>Publicaciones disponibles</h3>
+            <div id="posts-container" class="posts-grid">
+                <p class="loading-state">Cargando publicaciones...</p>
+            </div>
+        </section>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Obtener los datos que guardaste en el localStorage al iniciar sesión
-            const userId = localStorage.getItem('userId');
-            const userName = localStorage.getItem('userName');
-
-            // 2. Seguridad: Si no hay un ID de usuario, redirigir inmediatamente al login
-            if (!userId) {
-                window.location.href = 'login.html'; // Pon el nombre exacto de tu archivo de login
-                return;
-            }
-
-            // 3. Pintar el nombre del usuario en la barra superior
-            const userDisplay = document.getElementById('user-display-name');
-            if (userDisplay) {
-                userDisplay.textContent = `Usuario: ${userName}`;
-            }
-
-            // 4. Lógica para el botón de Cerrar Sesión
-            const logoutBtn = document.getElementById('btn-session-logout');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    localStorage.clear(); // Borra las credenciales locales
-                    window.location.href = 'login.html'; // Redirige al login
-                });
-            }
-        });
-    </script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
