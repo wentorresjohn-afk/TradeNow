@@ -84,3 +84,109 @@ function renderPosts(posts) {
         postsContainer.appendChild(card);
     });
 }
+
+// ==========================================
+// RF9: Enviar propuesta de intercambio
+// ==========================================
+const proposalModal = document.getElementById('proposal-modal');
+const formCreateProposal = document.getElementById('form-create-proposal');
+const offeredPostSelect = document.getElementById('proposal-offered-post');
+const noPostsMsg = document.getElementById('proposal-no-posts-msg');
+const btnSubmitProposal = document.getElementById('btn-submit-proposal');
+
+async function openProposalModal(targetPostId, postTitle) {
+    document.getElementById('proposal-target-id').value = targetPostId;
+    document.getElementById('proposal-modal-text').textContent = `Vas a proponer un trueque por: "${postTitle}"`;
+    proposalModal.classList.remove('hidden');
+    await loadMyPostsForSelect(targetPostId);
+}
+
+// Carga las publicaciones del usuario actual para elegir cuál ofrece
+async function loadMyPostsForSelect(excludePostId) {
+    offeredPostSelect.innerHTML = '<option value="" disabled selected>Cargando tus publicaciones...</option>';
+    noPostsMsg.classList.add('hidden');
+    btnSubmitProposal.disabled = false;
+
+    const userId = localStorage.getItem('userId');
+
+    try {
+        const response = await fetch(`${API_URL}/publicaciones/all`);
+        if (response.status === 204) {
+            showNoPostsState();
+            return;
+        }
+        if (!response.ok) throw new Error('Error al cargar tus publicaciones');
+
+        const allPosts = await response.json();
+        const myPosts = allPosts.filter(p =>
+            p.user && p.user.id == userId && p.id != excludePostId
+        );
+
+        if (myPosts.length === 0) {
+            showNoPostsState();
+            return;
+        }
+
+        offeredPostSelect.innerHTML = '<option value="" disabled selected>Selecciona una publicación</option>';
+        myPosts.forEach(p => {
+            offeredPostSelect.innerHTML += `<option value="${p.id}">${p.title}</option>`;
+        });
+
+    } catch (error) {
+        console.error('Error cargando publicaciones propias:', error);
+        offeredPostSelect.innerHTML = '<option value="" disabled selected>Error al cargar</option>';
+    }
+}
+
+function showNoPostsState() {
+    offeredPostSelect.innerHTML = '<option value="" disabled selected>No tienes publicaciones</option>';
+    noPostsMsg.classList.remove('hidden');
+    btnSubmitProposal.disabled = true;
+}
+
+document.getElementById('btn-close-proposal').addEventListener('click', () => {
+    proposalModal.classList.add('hidden');
+});
+
+formCreateProposal.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const offeredPublicationId = offeredPostSelect.value;
+    if (!offeredPublicationId) {
+        alert('Selecciona una publicación para ofrecer.');
+        return;
+    }
+
+    const proposalData = {
+        senderId: parseInt(userId),
+        targetPublicationId: parseInt(document.getElementById('proposal-target-id').value),
+        offeredPublicationId: parseInt(offeredPublicationId)
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/propuestas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(proposalData)
+        });
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => null);
+            const errorMsg = Array.isArray(data) ? data.join(', ') : (data || 'Error al enviar la propuesta');
+            throw new Error(errorMsg);
+        }
+
+        alert('¡Propuesta enviada con éxito!');
+        proposalModal.classList.add('hidden');
+
+    } catch (error) {
+        alert('Error: ' + error.message);
+        console.error('Detalle:', error);
+    }
+});

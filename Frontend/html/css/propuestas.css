@@ -42,6 +42,7 @@
     text-transform: uppercase;
 }
 
-.status-pendiente { background-color: #fef3c7; color: #d97706; }
-.status-aceptada { background-color: #d1fae5; color: #059669; }
-.status-rechazada { background-color: #fee2e2; color: #dc2626; }
+.status-pending { background-color: #fef3c7; color: #d97706; }
+.status-accepted { background-color: #d1fae5; color: #059669; }
+.status-rejected { background-color: #fee2e2; color: #dc2626; }
+.status-countered { background-color: #dbeafe; color: #1d4ed8; }

@@ -52,6 +52,34 @@
         </div>
     </div>
 
+    <div id="respond-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <h3>Responder a la Propuesta</h3>
+        <p id="respond-modal-text" style="font-size: 0.9rem; margin-bottom: 16px; color: #475569;"></p>
+
+        <form id="form-respond-proposal">
+            <input type="hidden" id="respond-proposal-id">
+            <div class="filter-group">
+                <label>Acción</label>
+                <select id="respond-action" required>
+                    <option value="ACCEPTED">Aceptar Propuesta</option>
+                    <option value="REJECTED">Rechazar Propuesta</option>
+                    <option value="COUNTERED">Enviar Contraoferta</option>
+                </select>
+            </div>
+            <div class="filter-group hidden" id="counter-offer-group">
+                <label>¿Cuál de tus publicaciones ofreces como contraoferta?</label>
+                <select id="respond-counter-post">
+                    <option value="" disabled selected>Cargando tus publicaciones...</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="btn-close-respond" class="btn-action btn-secondary">Cancelar</button>
+                <button type="submit" class="btn-action btn-primary">Enviar Respuesta</button>
+            </div>
+        </form>
+    </div>
+</div>
     <script src="js/propuestas.js"></script>
 </body>
 </html>
