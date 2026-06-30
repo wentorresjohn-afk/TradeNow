@@ -7,7 +7,6 @@
     <style>
         :root {
             --primary: #4f46e5;
-            --primary-hover: #4338ca;
             --success: #10b981;
             --bg-body: #f3f4f6;
             --bg-card: #ffffff;
@@ -16,56 +15,18 @@
             --border: #d1d5db;
         }
 
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .form-container {
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            padding: 32px;
-            margin-top: 40px;
-        }
-
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .form-container { background-color: var(--bg-card); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 100%; max-width: 600px; padding: 32px; margin-top: 40px; }
         .header { margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
         .header h2 { margin: 0; color: var(--primary); }
         .header p { margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem; }
-
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; }
         .form-group textarea { resize: vertical; min-height: 100px; }
         .row { display: flex; gap: 16px; }
         .row .form-group { flex: 1; }
-
-        .btn-submit {
-            width: 100%;
-            background-color: var(--success);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        .btn-submit { width: 100%; background-color: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; }
         .btn-submit:hover { background-color: #059669; }
         .btn-cancel { display: block; text-align: center; margin-top: 16px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; display: none; }
@@ -84,7 +45,6 @@
         <div id="post-alert" class="alert"></div>
 
         <form id="form-create-post">
-            
             <div class="form-group">
                 <label for="post-title">Título del Artículo</label>
                 <input type="text" id="post-title" name="title" required placeholder="Ej. Bicicleta de montaña">
@@ -109,7 +69,6 @@
                 <div class="form-group">
                     <label for="post-type">Tipo de Publicación</label>
                     <select id="post-type" name="type" required>
-                        <option value="" disabled selected>Selecciona una opción</option>
                         <option value="OFFER">Oferta</option>
                         <option value="SEARCH">Búsqueda</option>
                     </select>
@@ -124,21 +83,13 @@
                 <div class="form-group">
                     <label for="post-category">Categoría</label>
                     <select id="post-category" name="categoryId" required>
-                        <option value="" disabled selected>Selecciona...</option>
-                        <option value="1">Tecnología</option>
-                        <option value="2">Hogar</option>
-                        <option value="3">Deportes</option>
-                        <option value="4">Vehículos</option>
+                        <option value="" disabled selected>Cargando categorías...</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="post-zone">Zona</label>
                     <select id="post-zone" name="zoneId" required>
-                        <option value="" disabled selected>Selecciona...</option>
-                        <option value="1">San José</option>
-                        <option value="2">Alajuela</option>
-                        <option value="3">Cartago</option>
-                        <option value="4">Heredia</option>
+                        <option value="" disabled selected>Cargando zonas...</option>
                     </select>
                 </div>
             </div>

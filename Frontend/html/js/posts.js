@@ -1,4 +1,3 @@
-// Configuración de la API y Cloudinary
 const API_URL = 'https://tradenow-437n.onrender.com/api';
 const CLOUD_NAME = "sboc5dmc"; 
 const UPLOAD_PRESET = "mi_preset_tradenow"; 
@@ -12,49 +11,82 @@ function showAlert(message, isSuccess = false) {
     alertContainer.style.display = 'block';
 }
 
+// 1. CARGA DINÁMICA: Llena los selects al abrir la página
+document.addEventListener('DOMContentLoaded', async () => {
+    const typeSelect = document.getElementById('post-type');
+    const catSelect = document.getElementById('post-category');
+    const zoneSelect = document.getElementById('post-zone');
+
+    // Llenar tipos fijos
+    typeSelect.innerHTML = `<option value="" disabled selected>Selecciona una opción</option>
+                            <option value="OFFER">Oferta</option>
+                            <option value="SEARCH">Búsqueda</option>`;
+
+    try {
+        const [catRes, zoneRes] = await Promise.all([
+            fetch(`${API_URL}/categorias`),
+            fetch(`${API_URL}/zonas`)
+        ]);
+        
+        const categorias = await catRes.json();
+        const zonas = await zoneRes.json();
+
+        catSelect.innerHTML = '<option value="" disabled selected>Selecciona una categoría</option>';
+        categorias.forEach(c => catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+
+        zoneSelect.innerHTML = '<option value="" disabled selected>Selecciona una zona</option>';
+        zonas.forEach(z => zoneSelect.innerHTML += `<option value="${z.id}">${z.name}</option>`);
+    } catch (e) {
+        console.error("Error al cargar selects:", e);
+        showAlert("Error cargando opciones. Revisa tu conexión.");
+    }
+});
+
+// 2. LÓGICA DE ENVÍO
 if (formCreatePost) {
     formCreatePost.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Limpiar alerta anterior
+        alertContainer.style.display = 'none';
 
         const fileInput = document.getElementById('post-image-file');
         const file = fileInput.files[0];
         const userId = localStorage.getItem('userId');
         
-        if (!userId || userId === "null") {
-            showAlert('Debes iniciar sesión para crear una publicación.');
+        // Validación de Tipo antes de empezar
+        const typeValue = document.getElementById('post-type').value;
+        if (!typeValue) {
+            showAlert('Por favor, selecciona un tipo de publicación válido.');
             return;
         }
 
-        if (!file) {
-            showAlert('Por favor, selecciona una imagen para el artículo.');
+        if (!userId || userId === "null") {
+            showAlert('Debes iniciar sesión.');
             return;
         }
 
         try {
             showAlert("Subiendo imagen a la nube...", true);
 
-            // 1. Subir imagen a Cloudinary
             const formData = new FormData();
             formData.append("file", file);
             formData.append("upload_preset", UPLOAD_PRESET);
 
             const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-                method: "POST",
-                body: formData
+                method: "POST", body: formData
             });
 
-            if (!res.ok) throw new Error("Error al subir la imagen. Verifica tu configuración de Cloudinary.");
+            if (!res.ok) throw new Error("Error al subir la imagen.");
             
             const imageData = await res.json();
-            const imageUrl = imageData.secure_url;
 
-            // 2. Preparar datos con validación estricta
             const rawValue = document.getElementById('post-value').value;
             const postData = {
                 title: document.getElementById('post-title').value,
                 description: document.getElementById('post-description').value,
-                imageUrl: imageUrl,
-                type: document.getElementById('post-type').value, // Asegúrate que sea 'OFFER' o 'SEARCH'
+                imageUrl: imageData.secure_url,
+                type: typeValue, // Ya validado arriba
                 estimatedValue: rawValue && rawValue !== "" ? parseFloat(rawValue) : 0.0,
                 exchangeFor: document.getElementById('post-exchange-for').value,
                 userId: parseInt(userId),
@@ -62,7 +94,6 @@ if (formCreatePost) {
                 zoneId: parseInt(document.getElementById('post-zone').value)
             };
 
-            // 3. Enviar datos al backend
             showAlert("Guardando publicación...", true);
             const response = await fetch(`${API_URL}/publicaciones/new`, {
                 method: 'POST',
@@ -70,11 +101,10 @@ if (formCreatePost) {
                 body: JSON.stringify(postData)
             });
 
-            const responseText = await response.text();
-            
+            // Si el backend devuelve error, leemos el mensaje exacto
             if (!response.ok) {
-                // Aquí el backend nos dice exactamente qué validación falló
-                throw new Error(responseText || 'Error en el servidor');
+                const errorMsg = await response.text();
+                throw new Error(errorMsg || "Error al crear la publicación");
             }
 
             showAlert('¡Publicación creada con éxito!', true);
@@ -83,7 +113,7 @@ if (formCreatePost) {
 
         } catch (error) {
             showAlert("Error: " + error.message);
-            console.error("Detalle del error:", error);
+            console.error("Detalle:", error);
         }
     });
 }

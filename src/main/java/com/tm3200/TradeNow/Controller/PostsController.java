@@ -3,6 +3,8 @@ package com.tm3200.TradeNow.Controller;
 import com.tm3200.TradeNow.Model.DTO.PostsDTO;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import com.tm3200.TradeNow.Model.Posts;
+import com.tm3200.TradeNow.Model.PostsEntitys.Category;
+import com.tm3200.TradeNow.Repository.CategoryJpaRepository;
 import com.tm3200.TradeNow.Service.PostsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,13 @@ public class PostsController
 {
     @Autowired
     private PostsService postsService;
+
+    private CategoryJpaRepository categoryJpaRepository;
+
+    @GetMapping("/categorias")
+    public List<Category> getCategorias() {
+        return categoryJpaRepository.findAll();
+    }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAll()
