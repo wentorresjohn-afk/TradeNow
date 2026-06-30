@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeNow - Mi Perfil</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --success-hover: #059669;
+            --bg-body: #f3f4f6;
+            --bg-navbar: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* NAVBAR (igual al resto del sitio) */
+        .navbar {
+            background-color: var(--bg-navbar);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .nav-item a:hover {
+            color: var(--primary);
+            background-color: #f3f4f6;
+        }
+
+        .nav-item.active a {
+            color: var(--primary);
+            background-color: #eef2ff;
+        }
+
+        .nav-item.btn-action a {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .nav-item.btn-action a:hover {
+            background-color: var(--success-hover);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .welcome-msg {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #fef2f2;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .main-container {
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        /* TARJETA DE PERFIL */
+        .profile-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .profile-info h2 {
+            margin: 0 0 4px 0;
+        }
+
+        .profile-info .email {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-right: 6px;
+        }
+
+        .badge.type {
+            background-color: #eef2ff;
+            color: var(--primary);
+        }
+
+        .badge.active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .profile-description {
+            margin-top: 12px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        /* STATS */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 16px 24px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-box .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-box .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* BOTÓN EDITAR */
+        .btn-edit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+
+        .btn-edit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* PUBLICACIONES DEL USUARIO */
+        .posts-section h3 {
+            margin-bottom: 16px;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .post-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background-color: #e5e7eb;
+        }
+
+        .post-tag {
+            display: inline-block;
+            background-color: #eef2ff;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 999px;
+            margin-bottom: 8px;
+        }
+
+        .post-card h4 {
+            margin: 0 0 6px 0;
+            font-size: 1rem;
+        }
+
+        .post-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .post-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .empty-state, .loading-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="dashboard.html" class="navbar-brand">TradeNow</a>
+
+        <ul class="navbar-menu">
+            <li class="nav-item"><a href="dashboard.html">Ver Publicaciones</a></li>
+            <li class="nav-item active"><a href="perfil.html">Mi Perfil</a></li>
+            <li class="nav-item"><a href="historial.html">Historial</a></li>
+            <li class="nav-item btn-action"><a href="crear-publicacion.html">+ Crear Publicación</a></li>
+        </ul>
+
+        <div class="user-section">
+            <span id="user-display-name" class="welcome-msg">Cargando...</span>
+            <button id="btn-session-logout" class="btn-logout">Salir</button>
+        </div>
+    </nav>
+
+    <main class="main-container">
+
+        <div id="profile-card-container">
+            <p class="loading-state">Cargando perfil...</p>
+        </div>
+
+        <section class="posts-section">
+            <h3>Mis publicaciones</h3>
+            <div id="my-posts-container" class="posts-grid">
+                <p class="loading-state">Cargando publicaciones...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/perfil.js"></script>
+</body>
+</html>
