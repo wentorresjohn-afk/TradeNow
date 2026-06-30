@@ -4,7 +4,9 @@ import com.tm3200.TradeNow.Model.DTO.PostsDTO;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import com.tm3200.TradeNow.Model.Posts;
 import com.tm3200.TradeNow.Model.PostsEntitys.Category;
+import com.tm3200.TradeNow.Model.PostsEntitys.Zone;
 import com.tm3200.TradeNow.Repository.CategoryJpaRepository;
+import com.tm3200.TradeNow.Repository.ZoneJpaRepository;
 import com.tm3200.TradeNow.Service.PostsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +27,23 @@ public class PostsController
     @Autowired
     private PostsService postsService;
 
+    @Autowired
     private CategoryJpaRepository categoryJpaRepository;
 
+    @Autowired
+    private ZoneJpaRepository zoneJpaRepository;
+
+
+    @CrossOrigin(origins = "*") // Importante para permitir la conexión desde el frontend
     @GetMapping("/categorias")
     public List<Category> getCategorias() {
         return categoryJpaRepository.findAll();
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/zonas")
+    public List<Zone> getZonas() {
+        return zoneJpaRepository.findAll();
     }
 
     @GetMapping("/all")
