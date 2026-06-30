@@ -23,9 +23,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <option value="SEARCH">Búsqueda</option>`;
 
     try {
+        // CORRECCIÓN: Se agrega /publicaciones a las rutas para que coincidan con tu @RequestMapping
         const [catRes, zoneRes] = await Promise.all([
-            fetch(`${API_URL}/categorias`),
-            fetch(`${API_URL}/zonas`)
+            fetch(`${API_URL}/publicaciones/categorias`), 
+            fetch(`${API_URL}/publicaciones/zonas`)
         ]);
         
         const categorias = await catRes.json();
@@ -54,7 +55,6 @@ if (formCreatePost) {
         const file = fileInput.files[0];
         const userId = localStorage.getItem('userId');
         
-        // Validación de Tipo antes de empezar
         const typeValue = document.getElementById('post-type').value;
         if (!typeValue) {
             showAlert('Por favor, selecciona un tipo de publicación válido.');
@@ -86,7 +86,7 @@ if (formCreatePost) {
                 title: document.getElementById('post-title').value,
                 description: document.getElementById('post-description').value,
                 imageUrl: imageData.secure_url,
-                type: typeValue, // Ya validado arriba
+                type: typeValue,
                 estimatedValue: rawValue && rawValue !== "" ? parseFloat(rawValue) : 0.0,
                 exchangeFor: document.getElementById('post-exchange-for').value,
                 userId: parseInt(userId),
@@ -101,7 +101,6 @@ if (formCreatePost) {
                 body: JSON.stringify(postData)
             });
 
-            // Si el backend devuelve error, leemos el mensaje exacto
             if (!response.ok) {
                 const errorMsg = await response.text();
                 throw new Error(errorMsg || "Error al crear la publicación");
