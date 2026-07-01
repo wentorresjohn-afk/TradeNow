@@ -98,8 +98,8 @@ public class TradeService {
             throw new RuntimeException("User not found");
         }
 
-        List<Trade> tradesAsUser1 = tradeRepository.findByUser1_IdAndStatus(userId, TradeStatus.ACTIVE);
-        List<Trade> tradesAsUser2 = tradeRepository.findByUser2_IdAndStatus(userId, TradeStatus.ACTIVE);
+        List<Trade> tradesAsUser1 = tradeRepository.findByUser1_Id(userId);
+        List<Trade> tradesAsUser2 = tradeRepository.findByUser2_Id(userId);
 
         List<Trade> allTrades = new ArrayList<>();
         allTrades.addAll(tradesAsUser1);

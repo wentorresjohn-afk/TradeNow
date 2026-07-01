@@ -17,6 +17,9 @@ public interface TradeJpaRepository extends JpaRepository<Trade, Integer> {
 
     List<Trade> findByUser2_IdAndStatus(Integer user2Id, TradeStatus status);
 
+    List<Trade> findByUser1_Id(Integer userId);
+    List<Trade> findByUser2_Id(Integer userId);
+
 
 
 
