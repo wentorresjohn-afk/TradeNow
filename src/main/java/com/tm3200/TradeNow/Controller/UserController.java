@@ -5,6 +5,7 @@ import com.tm3200.TradeNow.Model.DTO.UserLoginDTO;
 import com.tm3200.TradeNow.Model.DTO.UserRegistrationDTO;
 import com.tm3200.TradeNow.Model.DTO.UserStatusDTO;
 import com.tm3200.TradeNow.Model.DTO.UserUpdateDTO;
+import com.tm3200.TradeNow.Model.Trade;
 import com.tm3200.TradeNow.Model.User;
 import com.tm3200.TradeNow.Service.UserService;
 import jakarta.validation.Valid;
@@ -78,8 +79,8 @@ public class UserController {
     @GetMapping("/user/{id}/history")
     public ResponseEntity<?> getHistory(@PathVariable("id") Integer id) {
         try {
-            User user = userService.getHistory(id);
-            return ResponseEntity.ok(user);
+            List<Trade> history = userService.getHistory(id);
+            return ResponseEntity.ok(history);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -104,7 +105,7 @@ public class UserController {
     }
 
     @PutMapping("/user/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable("id") Integer id, @Valid @RequestBody UserStatusDTO dto, BindingResult result) {
+    public ResponseEntity<?> updateStatus(@PathVariable("id") Integer id, @Valid @RequestBody UserStatusDTO dto, BindingResult result, @RequestParam Integer adminId) {
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();
             for (FieldError error : result.getFieldErrors()) {
@@ -114,12 +115,24 @@ public class UserController {
         }
 
         try {
-            User updated = userService.updateStatus(id, dto);
+            User updated = userService.updateStatus(id, dto, adminId);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<?> deleteAccount(@PathVariable("id") Integer id, @RequestParam Integer adminId) {
+        try {
+            userService.deleteUser(id, adminId);
+            return ResponseEntity.ok("Cuenta eliminada exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }
+
+
+

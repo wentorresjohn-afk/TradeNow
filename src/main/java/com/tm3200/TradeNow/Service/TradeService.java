@@ -78,6 +78,15 @@ public class TradeService {
         }
         if (trade.getConfirmedByUser1() && trade.getConfirmedByUser2()) {
             trade.setStatus(TradeStatus.COMPLETED);
+
+            User user1 = trade.getUser1();
+            User user2 = trade.getUser2();
+
+            user1.setCompletedTrades(user1.getCompletedTrades() + 1);
+            user2.setCompletedTrades(user2.getCompletedTrades() + 1);
+
+            userRepository.save(user1);
+            userRepository.save(user2);
         }
 
         return tradeRepository.save(trade);
