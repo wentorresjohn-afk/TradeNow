@@ -30,6 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     navAdmin.classList.remove('hidden');
     }
 
+    // 3.3 Mostrar el link de reportes solo si el usuario es ADMINISTRATOR
+    const navReportes = document.getElementById('nav-reportes');
+    if (navReportes && userType === 'ADMINISTRATOR') {
+        navReportes.classList.remove('hidden');
+    } 
+
     // 4. Lógica para el botón de Cerrar Sesión
     const logoutBtn = document.getElementById('btn-session-logout');
     if (logoutBtn) {

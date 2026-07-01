@@ -109,3 +109,11 @@ tr:hover td {
     align-items: center;
     gap: 8px;
 }
+
+/* Estado vacío / cargando dentro de las tablas de reporte */
+.report-empty-row td {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 20px;
+}
