@@ -37,7 +37,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setPassword(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt()));
         user.setGeographicZone(dto.getGeographicZone());
-        user.setUserType(UserType.GENERAL);
+        user.setUserType(dto.getUserType() != null ? dto.getUserType() : UserType.GENERAL);
         user.setActive(true);
         user.setCompletedTrades(0);
         user.setAverageRating(0.0);

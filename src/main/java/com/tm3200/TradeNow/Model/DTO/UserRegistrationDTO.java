@@ -1,11 +1,14 @@
 package com.tm3200.TradeNow.Model.DTO;
 
+import com.tm3200.TradeNow.Model.Enum.UserType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 
-public class UserRegistrationDTO {
+public class UserRegistrationDTO
+{
     @NotBlank(message = "Name is required")
     private String name;
 
@@ -20,6 +23,8 @@ public class UserRegistrationDTO {
     )
     private String password;
 
+    @NotNull(message = "El tipo de usuario no debe ir vacío")
+    private UserType userType;
 
     @NotBlank(message = "Geographic zone is required")
     private String geographicZone;
@@ -28,10 +33,11 @@ public class UserRegistrationDTO {
     public UserRegistrationDTO() {
     }
 
-    public UserRegistrationDTO(String name, String email, String password, String geographicZone) {
+    public UserRegistrationDTO(String name, String email, String password, UserType userType, String geographicZone) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.userType = userType;
         this.geographicZone = geographicZone;
     }
 
@@ -57,6 +63,14 @@ public class UserRegistrationDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public String getGeographicZone() {
