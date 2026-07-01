@@ -1,6 +1,7 @@
 package com.tm3200.TradeNow.Controller;
 
 import com.tm3200.TradeNow.Model.DTO.PostsDTO;
+import com.tm3200.TradeNow.Model.Enum.PublicationStatus;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import com.tm3200.TradeNow.Model.Posts;
 import com.tm3200.TradeNow.Model.PostsEntitys.Category;
@@ -137,4 +138,26 @@ public class PostsController
 
         return ResponseEntity.ok(posts);
     }
+
+    // RF8 - Moderar publicación (aprobar o rechazar)
+    @PutMapping("/moderate/{id}")
+    public ResponseEntity<?> moderatePost(
+            @PathVariable Integer id,
+            @RequestParam PublicationStatus status)
+    {
+        // Llamar al servicio para moderar la publicación
+        Posts updatedPost = postsService.moderatePost(id, status);
+
+        // Si retorna null, la publicación no existe
+        // o el estado enviado no es válido
+        if (updatedPost == null)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Publicación no encontrada o estado inválido");
+        }
+
+        // Retornar la publicación actualizada
+        return ResponseEntity.ok(updatedPost);
+
+    }//Fin del metodo
 }

@@ -179,4 +179,35 @@ public class PostsService
     {
         return postsJpaRepository.findByCategoryIdAndZoneIdAndType(categoryId, zoneId, type);
     }//Fin del metodo
+
+
+    // RF8 - Moderar publicación (aprobar o rechazar)
+    public Posts moderatePost(Integer id, PublicationStatus status)
+    {
+        // 1. Buscar la publicación por su ID
+        Posts post = postsJpaRepository.findById(id).orElse(null);
+
+        // Si no existe la publicación, retornar null
+        if (post == null)
+        {
+            return null;
+        }
+
+        // 2. Validar que únicamente se permitan los estados
+        // APPROVED o REJECTED para la moderación
+        if (status != PublicationStatus.APPROVED &&
+                status != PublicationStatus.REJECTED)
+        {
+            return null;
+        }
+
+        // 3. Actualizar el estado de la publicación
+        post.setStatus(status);
+
+        // 4. Guardar los cambios en la base de datos
+        // y retornar la publicación actualizada
+        return postsJpaRepository.save(post);
+
+    }//Fin del metodo
+
 }
