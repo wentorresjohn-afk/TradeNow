@@ -8,11 +8,9 @@ import com.tm3200.TradeNow.Model.Enum.UserType;
 import com.tm3200.TradeNow.Model.Posts;
 import com.tm3200.TradeNow.Model.PostsEntitys.Category;
 import com.tm3200.TradeNow.Model.PostsEntitys.Zone;
+import com.tm3200.TradeNow.Model.Proposal;
 import com.tm3200.TradeNow.Model.User;
-import com.tm3200.TradeNow.Repository.CategoryJpaRepository;
-import com.tm3200.TradeNow.Repository.PostsJpaRepository;
-import com.tm3200.TradeNow.Repository.UserJpaRepository;
-import com.tm3200.TradeNow.Repository.ZoneJpaRepository;
+import com.tm3200.TradeNow.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +32,9 @@ public class PostsService
 
     @Autowired
     private UserJpaRepository userJpaRepository;
+
+    @Autowired
+    private ProposalJpaRepository proposalJpaRepository;
 
     //Metodo que lista todas las publicaciones (solo las aprobadas, visibles al público)
     public List<Posts> findAll()
@@ -160,7 +161,7 @@ public class PostsService
         return postsJpaRepository.save(posts);
     }//Fin del metodo
 
-    //Eliminar una publicación por id (solo administradores)
+    //Eliminar una publicación por id (solo administradores). Tambien elimina las propuestas asociadas
     public boolean deletePost(Integer id, Integer adminId)
     {
         User admin = userJpaRepository.findById(adminId)
@@ -174,6 +175,16 @@ public class PostsService
 
         if (posts.isPresent())
         {
+            Posts post = posts.get();
+
+            //Borramos primero las propuestas donde esta publicacion es la publicacion objetivo
+            List<Proposal> proposalsAsTarget = proposalJpaRepository.findByTargetPublicationId(post);
+            proposalJpaRepository.deleteAll(proposalsAsTarget);
+
+            //Borramos tambien las propuestas donde esta publicacion fue la ofrecida a cambio
+            List<Proposal> proposalsAsOffered = proposalJpaRepository.findByOfferedPublicationId(post);
+            proposalJpaRepository.deleteAll(proposalsAsOffered);
+
             postsJpaRepository.deleteById(id);
             return true;
         }else
