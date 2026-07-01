@@ -116,12 +116,15 @@ public class PostsController
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
+    public ResponseEntity<?> delete(@PathVariable Integer id,
+                                    @RequestParam Integer userId) {
 
-        if (postsService.deletePost(id)) {
+        if (postsService.deletePost(id, userId)) {
             return ResponseEntity.ok("Publicación eliminada exitosamente");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Publicación no encontrada");
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("No puedes eliminar esta publicación.");
     }
 
     @GetMapping("/pendientes")

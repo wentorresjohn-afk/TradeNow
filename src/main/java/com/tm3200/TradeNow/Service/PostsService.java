@@ -161,20 +161,22 @@ public class PostsService
     }//Fin del metodo
 
     //Eliminar una publicación por id
-    public boolean deletePost(Integer id)
+    public boolean deletePost(Integer id, Integer userId)
     {
-        Optional<Posts> posts = postsJpaRepository.findById(id);
+        Posts post = postsJpaRepository.findById(id).orElse(null);
 
-        if (posts.isPresent())
-        {
-            postsJpaRepository.deleteById(id);
-            return true;
-        }else
-        {
+        if(post == null){
             return false;
         }
 
-    }//Fin del metodo
+        if(!post.getUser().getId().equals(userId)){
+            return false;
+        }
+
+        postsJpaRepository.delete(post);
+
+        return true;
+    }
 
     //Filtrar por categoría, zona y tipo (solo publicaciones aprobadas)
     public List<Posts> filterPosts(Integer categoryId, Integer zoneId, PublicationType type)
