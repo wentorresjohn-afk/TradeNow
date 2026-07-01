@@ -5,9 +5,11 @@ import com.tm3200.TradeNow.Model.Enum.RatingRole;
 import com.tm3200.TradeNow.Model.Enum.TradeStatus;
 import com.tm3200.TradeNow.Model.Rating;
 import com.tm3200.TradeNow.Model.Trade;
+import com.tm3200.TradeNow.Model.User;
 import com.tm3200.TradeNow.Model.UserReputation;
 import com.tm3200.TradeNow.Repository.RatingJpaRepository;
 import com.tm3200.TradeNow.Repository.TradeJpaRepository;
+import com.tm3200.TradeNow.Repository.UserJpaRepository;
 import com.tm3200.TradeNow.Repository.UserReputationJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,9 @@ public class RatingService
 
     @Autowired
     private TradeJpaRepository tradeRepo;
+
+    @Autowired
+    private UserJpaRepository userRepository;
 
     public Rating addRating(RatingDTO dto)
     {
@@ -79,6 +84,12 @@ public class RatingService
         reputation.setTotalRatings(ratings.size());
 
         reputationRepo.save(reputation);
+
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            user.setAverageRating(weightedScore);
+            userRepository.save(user);
+        }
     }
 
     public UserReputation getReputation(Integer userId) {

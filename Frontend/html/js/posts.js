@@ -1,6 +1,6 @@
 const API_URL = 'https://tradenow-437n.onrender.com/api';
-const CLOUD_NAME = "sboc5dmc"; 
-const UPLOAD_PRESET = "mi_preset_tradenow"; 
+const CLOUD_NAME = "sboc5dmc";
+const UPLOAD_PRESET = "mi_preset_tradenow";
 
 const formCreatePost = document.getElementById('form-create-post');
 const alertContainer = document.getElementById('post-alert');
@@ -11,108 +11,206 @@ function showAlert(message, isSuccess = false) {
     alertContainer.style.display = 'block';
 }
 
-// 1. CARGA DINÁMICA: Llena los selects al abrir la página
+// ==========================
+// CARGAR SELECTS
+// ==========================
 document.addEventListener('DOMContentLoaded', async () => {
+
     const typeSelect = document.getElementById('post-type');
     const catSelect = document.getElementById('post-category');
     const zoneSelect = document.getElementById('post-zone');
 
-    // Llenar tipos fijos
-    typeSelect.innerHTML = `<option value="" disabled selected>Selecciona una opción</option>
-                            <option value="OFFER">Oferta</option>
-                            <option value="SEARCH">Búsqueda</option>`;
+    // Tipos
+    typeSelect.innerHTML = `
+        <option value="" disabled selected>Selecciona una opción</option>
+        <option value="OFFER">Oferta</option>
+        <option value="SEARCH">Búsqueda</option>
+    `;
 
     try {
-        // CORRECCIÓN: Se agrega /publicaciones a las rutas para que coincidan con tu @RequestMapping
+
         const [catRes, zoneRes] = await Promise.all([
-            fetch(`${API_URL}/publicaciones/categorias`), 
+            fetch(`${API_URL}/publicaciones/categorias`),
             fetch(`${API_URL}/publicaciones/zonas`)
         ]);
-        
+
+        if (!catRes.ok || !zoneRes.ok) {
+            throw new Error("No fue posible cargar la información.");
+        }
+
         const categorias = await catRes.json();
         const zonas = await zoneRes.json();
 
-        catSelect.innerHTML = '<option value="" disabled selected>Selecciona una categoría</option>';
-        categorias.forEach(c => catSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+        // ==========================
+        // CATEGORÍAS
+        // ==========================
 
-        zoneSelect.innerHTML = '<option value="" disabled selected>Selecciona una zona</option>';
-        zonas.forEach(z => zoneSelect.innerHTML += `<option value="${z.id}">${z.name}</option>`);
+        catSelect.innerHTML =
+            '<option value="" disabled selected>Selecciona una categoría</option>';
+
+        categorias.forEach(c => {
+
+            catSelect.innerHTML += `
+                <option value="${c.id}">
+                    ${c.name}
+                </option>
+            `;
+
+        });
+
+        // ==========================
+        // CIUDADES
+        // ==========================
+
+        zoneSelect.innerHTML =
+            '<option value="" disabled selected>Selecciona una ciudad</option>';
+
+        zonas.forEach(z => {
+
+            zoneSelect.innerHTML += `
+                <option value="${z.id}">
+                    ${z.cityName}
+                </option>
+            `;
+
+            // Si prefieres mostrar provincia también usa:
+            // ${z.cityName} - ${z.state}
+
+        });
+
     } catch (e) {
-        console.error("Error al cargar selects:", e);
-        showAlert("Error cargando opciones. Revisa tu conexión.");
+
+        console.error(e);
+        showAlert("Error cargando categorías y ciudades.");
+
     }
+
 });
 
-// 2. LÓGICA DE ENVÍO
+// ==========================
+// CREAR PUBLICACIÓN
+// ==========================
+
 if (formCreatePost) {
+
     formCreatePost.addEventListener('submit', async (e) => {
+
         e.preventDefault();
-        
-        // Limpiar alerta anterior
-        alertContainer.style.display = 'none';
+
+        alertContainer.style.display = "none";
 
         const fileInput = document.getElementById('post-image-file');
         const file = fileInput.files[0];
-        const userId = localStorage.getItem('userId');
-        
-        const typeValue = document.getElementById('post-type').value;
-        if (!typeValue) {
-            showAlert('Por favor, selecciona un tipo de publicación válido.');
+
+        if (!file) {
+            showAlert("Debes seleccionar una imagen.");
             return;
         }
 
+        const userId = localStorage.getItem("userId");
+
         if (!userId || userId === "null") {
-            showAlert('Debes iniciar sesión.');
+            showAlert("Debes iniciar sesión.");
+            return;
+        }
+
+        const typeValue = document.getElementById("post-type").value;
+
+        if (!typeValue) {
+            showAlert("Selecciona un tipo de publicación.");
             return;
         }
 
         try {
-            showAlert("Subiendo imagen a la nube...", true);
+
+            showAlert("Subiendo imagen...", true);
 
             const formData = new FormData();
+
             formData.append("file", file);
             formData.append("upload_preset", UPLOAD_PRESET);
 
-            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-                method: "POST", body: formData
-            });
+            const uploadResponse = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
 
-            if (!res.ok) throw new Error("Error al subir la imagen.");
-            
-            const imageData = await res.json();
+            if (!uploadResponse.ok) {
+                throw new Error("No se pudo subir la imagen.");
+            }
 
-            const rawValue = document.getElementById('post-value').value;
+            const imageData = await uploadResponse.json();
+
+            const rawValue = document.getElementById("post-value").value;
+
             const postData = {
-                title: document.getElementById('post-title').value,
-                description: document.getElementById('post-description').value,
+
+                title: document.getElementById("post-title").value,
+
+                description: document.getElementById("post-description").value,
+
                 imageUrl: imageData.secure_url,
+
                 type: typeValue,
-                estimatedValue: rawValue && rawValue !== "" ? parseFloat(rawValue) : 0.0,
-                exchangeFor: document.getElementById('post-exchange-for').value,
+
+                estimatedValue:
+                    rawValue !== ""
+                        ? parseFloat(rawValue)
+                        : 0.0,
+
+                exchangeFor: document.getElementById("post-exchange-for").value,
+
                 userId: parseInt(userId),
-                categoryId: parseInt(document.getElementById('post-category').value),
-                zoneId: parseInt(document.getElementById('post-zone').value)
+
+                categoryId: parseInt(document.getElementById("post-category").value),
+
+                zoneId: parseInt(document.getElementById("post-zone").value)
+
             };
 
             showAlert("Guardando publicación...", true);
+
             const response = await fetch(`${API_URL}/publicaciones/new`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
                 body: JSON.stringify(postData)
+
             });
 
             if (!response.ok) {
-                const errorMsg = await response.text();
-                throw new Error(errorMsg || "Error al crear la publicación");
+
+                const error = await response.text();
+
+                throw new Error(error || "No se pudo crear la publicación.");
+
             }
 
-            showAlert('¡Publicación creada con éxito!', true);
+            showAlert("¡Publicación creada con éxito!", true);
+
             formCreatePost.reset();
-            setTimeout(() => window.location.href = 'dashboard.html', 2000);
+
+            setTimeout(() => {
+
+                window.location.href = "dashboard.html";
+
+            }, 2000);
 
         } catch (error) {
-            showAlert("Error: " + error.message);
-            console.error("Detalle:", error);
+
+            console.error(error);
+
+            showAlert(error.message);
+
         }
+
     });
+
 }

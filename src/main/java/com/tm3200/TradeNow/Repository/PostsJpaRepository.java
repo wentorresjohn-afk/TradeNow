@@ -1,5 +1,6 @@
 package com.tm3200.TradeNow.Repository;
 
+import com.tm3200.TradeNow.Model.Enum.PublicationStatus;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import com.tm3200.TradeNow.Model.Posts;
 import com.tm3200.TradeNow.Model.User;
@@ -13,4 +14,7 @@ public interface PostsJpaRepository extends JpaRepository<Posts, Integer >
 {
     List<Posts> findByCategoryIdAndZoneIdAndType(Integer categoryId, Integer zoneId, PublicationType type);
     List<Posts> findByUser(User user);
+    List<Posts> findByStatus(PublicationStatus status);
+    List<Posts> findByCategoryIdAndZoneIdAndTypeAndStatus(Integer categoryId, Integer zoneId, PublicationType type, PublicationStatus status);
+    List<Posts> findByUserId(Integer userId);
 }

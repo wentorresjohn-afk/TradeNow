@@ -4,46 +4,264 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TradeNow - Mis Propuestas</title>
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/propuestas.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --success-hover: #059669;
+            --bg-body: #f3f4f6;
+            --bg-navbar: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: var(--bg-navbar);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .nav-item a:hover {
+            color: var(--primary);
+            background-color: #f3f4f6;
+        }
+
+        .nav-item.active a {
+            color: var(--primary);
+            background-color: #eef2ff;
+        }
+
+        .nav-item.btn-action a {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .nav-item.btn-action a:hover {
+            background-color: var(--success-hover);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .welcome-msg {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover { background-color: #fef2f2; }
+
+        /* LAYOUT */
+        .main-container {
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .propuestas-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+
+        .propuestas-section h3 {
+            margin: 0 0 16px 0;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        /* TARJETA DE PROPUESTA */
+        .proposal-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .proposal-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+
+        .status-pending   { background: #fef9c3; color: #854d0e; }
+        .status-accepted  { background: #d1fae5; color: #065f46; }
+        .status-rejected  { background: #fee2e2; color: #991b1b; }
+        .status-countered { background: #e0e7ff; color: #3730a3; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .modal-content h3 { margin: 0 0 8px 0; }
+
+        .filter-group { margin-bottom: 16px; }
+        .filter-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .btn-action {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .btn-action.btn-primary { background-color: var(--primary); color: white; }
+        .btn-action.btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-action.btn-secondary { background-color: #e2e8f0; color: #475569; }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <h2 class="nav-logo" onclick="window.location.href='dashboard.html'" style="cursor:pointer;">TradeNow</h2>
-        <div class="nav-user-zone">
-            <button onclick="window.location.href='dashboard.html'" class="btn-action btn-secondary">Volver al Dashboard</button>
+        <a href="dashboard.html" class="navbar-brand">TradeNow</a>
+
+        <ul class="navbar-menu">
+            <li class="nav-item"><a href="dashboard.html">Ver Publicaciones</a></li>
+            <li class="nav-item"><a href="perfil.html">Mi Perfil</a></li>
+            <li class="nav-item active"><a href="propuestas.html">Mis Propuestas</a></li>
+            <li class="nav-item btn-action"><a href="crear-publicacion.html">+ Crear Publicación</a></li>
+        </ul>
+
+        <div class="user-section">
+            <span id="user-display-name" class="welcome-msg">Cargando...</span>
+            <button id="btn-session-logout" class="btn-logout">Salir</button>
         </div>
     </nav>
 
-    <main class="propuestas-layout">
+    <main class="main-container">
         <section class="propuestas-section">
             <h3>Propuestas que has Enviado</h3>
-            <div id="enviadas-container" class="propuestas-list">
-                </div>
+            <div id="enviadas-container"></div>
         </section>
 
         <section class="propuestas-section">
-            <h3>Propuestas Recibidas (Tus Productos)</h3>
-            <div id="recibidas-container" class="propuestas-list">
-                </div>
+            <h3>Propuestas Recibidas</h3>
+            <div id="recibidas-container"></div>
         </section>
     </main>
 
+    <!-- MODAL ÚNICO para responder -->
     <div id="respond-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h3>Responder a la Propuesta</h3>
-            <p id="respond-modal-text" style="font-size: 0.9rem; margin-bottom: 16px; color: #475569;"></p>
-            
+            <p id="respond-modal-text" style="font-size:0.9rem; margin-bottom:16px; color:#475569;"></p>
+
             <form id="form-respond-proposal">
                 <input type="hidden" id="respond-proposal-id">
+
                 <div class="filter-group">
                     <label>Acción</label>
                     <select id="respond-action" required>
-                        <option value="ACEPTAR">Aceptar Propuesta</option>
-                        <option value="RECHAZAR">Rechazar Propuesta</option>
+                        <option value="ACCEPTED">Aceptar Propuesta</option>
+                        <option value="REJECTED">Rechazar Propuesta</option>
+                        <option value="COUNTERED">Enviar Contraoferta</option>
                     </select>
                 </div>
+
+                <div class="filter-group hidden" id="counter-offer-group">
+                    <label>¿Cuál de tus publicaciones ofreces como contraoferta?</label>
+                    <select id="respond-counter-post">
+                        <option value="" disabled selected>Cargando tus publicaciones...</option>
+                    </select>
+                </div>
+
                 <div class="modal-actions">
                     <button type="button" id="btn-close-respond" class="btn-action btn-secondary">Cancelar</button>
                     <button type="submit" class="btn-action btn-primary">Enviar Respuesta</button>
@@ -52,34 +270,17 @@
         </div>
     </div>
 
-    <div id="respond-modal" class="modal-overlay hidden">
-    <div class="modal-content">
-        <h3>Responder a la Propuesta</h3>
-        <p id="respond-modal-text" style="font-size: 0.9rem; margin-bottom: 16px; color: #475569;"></p>
+    <script>
+        // Navbar: nombre y logout
+        const userName = localStorage.getItem('userName');
+        const userDisplay = document.getElementById('user-display-name');
+        if (userDisplay && userName) userDisplay.textContent = `Usuario: ${userName}`;
 
-        <form id="form-respond-proposal">
-            <input type="hidden" id="respond-proposal-id">
-            <div class="filter-group">
-                <label>Acción</label>
-                <select id="respond-action" required>
-                    <option value="ACCEPTED">Aceptar Propuesta</option>
-                    <option value="REJECTED">Rechazar Propuesta</option>
-                    <option value="COUNTERED">Enviar Contraoferta</option>
-                </select>
-            </div>
-            <div class="filter-group hidden" id="counter-offer-group">
-                <label>¿Cuál de tus publicaciones ofreces como contraoferta?</label>
-                <select id="respond-counter-post">
-                    <option value="" disabled selected>Cargando tus publicaciones...</option>
-                </select>
-            </div>
-            <div class="modal-actions">
-                <button type="button" id="btn-close-respond" class="btn-action btn-secondary">Cancelar</button>
-                <button type="submit" class="btn-action btn-primary">Enviar Respuesta</button>
-            </div>
-        </form>
-    </div>
-</div>
+        document.getElementById('btn-session-logout').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+    </script>
     <script src="js/propuestas.js"></script>
 </body>
 </html>

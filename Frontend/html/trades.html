@@ -3,43 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeNow - Intercambios Activos</title>
-    <link rel="stylesheet" href="css/dashboard.css">
+    <title>TradeNow - Mis Intercambios</title>
     <style>
-        .trades-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 900px; margin: 32px auto; padding: 0 24px; }
-        .trade-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; }
-        .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-        .badge-progreso { background: #e0f2fe; color: #0369a1; }
-        .badge-completado { background: #d1fae5; color: #065f46; }
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --success-hover: #059669;
+            --bg-body: #f3f4f6;
+            --bg-navbar: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: var(--bg-navbar);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .nav-item a:hover { color: var(--primary); background-color: #f3f4f6; }
+        .nav-item.active a { color: var(--primary); background-color: #eef2ff; }
+        .nav-item.btn-action a { background-color: var(--success); color: white; }
+        .nav-item.btn-action a:hover { background-color: var(--success-hover); }
+
+        .user-section { display: flex; align-items: center; gap: 16px; }
+
+        .welcome-msg {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover { background-color: #fef2f2; }
+
+        .main-container {
+            max-width: 900px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        .main-container h3 { margin-bottom: 20px; }
+
+        .trade-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .trade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .badge-active    { background: #e0f2fe; color: #0369a1; }
+        .badge-completed { background: #d1fae5; color: #065f46; }
+
+        .trade-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .trade-actions {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .date-group { display: flex; flex-direction: column; gap: 4px; }
+        .date-group label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+        .date-group input {
+            padding: 8px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: #e2e8f0; color: #475569; }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 0;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .modal-content h3 { margin: 0 0 8px 0; }
+        .modal-subtext { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea { resize: vertical; min-height: 80px; }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <h2 class="nav-logo" onclick="window.location.href='dashboard.html'" style="cursor:pointer;">TradeNow</h2>
-        <button onclick="window.location.href='dashboard.html'" class="btn-action btn-secondary">Volver</button>
+        <a href="dashboard.html" class="navbar-brand">TradeNow</a>
+        <ul class="navbar-menu">
+            <li class="nav-item"><a href="dashboard.html">Ver Publicaciones</a></li>
+            <li class="nav-item"><a href="perfil.html">Mi Perfil</a></li>
+            <li class="nav-item"><a href="propuestas.html">Mis Propuestas</a></li>
+            <li class="nav-item active"><a href="trades.html">Mis Intercambios</a></li>
+            <li class="nav-item btn-action"><a href="crear-publicacion.html">+ Crear Publicación</a></li>
+        </ul>
+        <div class="user-section">
+            <span id="user-display-name" class="welcome-msg">Cargando...</span>
+            <button id="btn-session-logout" class="btn-logout">Salir</button>
+        </div>
     </nav>
 
-    <main class="trades-grid">
+    <main class="main-container">
         <h3>Tus Intercambios en Curso</h3>
-        <div id="trades-container"></div>
+        <div id="trades-container">
+            <p class="empty-state">Cargando intercambios...</p>
+        </div>
     </main>
 
     <div id="rating-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h3>Calificar Intercambio</h3>
+            <p id="rating-modal-text" class="modal-subtext"></p>
             <form id="form-rating">
                 <input type="hidden" id="rating-trade-id">
-                <div class="filter-group">
+                <input type="hidden" id="rating-rated-id">
+                <input type="hidden" id="rating-rater-role">
+                <div class="form-group">
                     <label>Puntuación (1 al 5)</label>
                     <input type="number" id="rating-score" min="1" max="5" required>
                 </div>
-                <div class="filter-group">
+                <div class="form-group">
                     <label>Comentario</label>
-                    <textarea id="rating-comment" rows="3" required></textarea>
+                    <textarea id="rating-comment" required></textarea>
                 </div>
                 <div class="modal-actions">
-                    <button type="button" onclick="document.getElementById('rating-modal').classList.add('hidden')" class="btn-action btn-secondary">Cancelar</button>
+                    <button type="button" id="btn-close-rating" class="btn-action btn-secondary">Cancelar</button>
                     <button type="submit" class="btn-action btn-primary">Guardar Calificación</button>
                 </div>
             </form>
@@ -47,91 +267,172 @@
     </div>
 
     <script>
-        const currentUserId = localStorage.getItem('userId');
-        
+        const API_URL = 'https://tradenow-437n.onrender.com/api';
+        const currentUserId = parseInt(localStorage.getItem('userId'));
+        const userName = localStorage.getItem('userName');
+
+        if (!currentUserId) window.location.href = 'login.html';
+
+        const userDisplay = document.getElementById('user-display-name');
+        if (userDisplay && userName) userDisplay.textContent = `Usuario: ${userName}`;
+
+        document.getElementById('btn-session-logout').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('btn-close-rating').addEventListener('click', () => {
+            document.getElementById('rating-modal').classList.add('hidden');
+        });
+
+        function alreadyRated(tradeId) {
+            const rated = JSON.parse(localStorage.getItem('ratedTrades') || '[]');
+            return rated.includes(tradeId);
+        }
+
+        function markAsRated(tradeId) {
+            const rated = JSON.parse(localStorage.getItem('ratedTrades') || '[]');
+            rated.push(tradeId);
+            localStorage.setItem('ratedTrades', JSON.stringify(rated));
+        }
+
         async function loadTrades() {
-            const res = await fetch(`/api/trades/user/${currentUserId}`);
-            if (res.ok) {
+            const container = document.getElementById('trades-container');
+            try {
+                const res = await fetch(`${API_URL}/trades/user/${currentUserId}`);
+                if (!res.ok) throw new Error(`Error ${res.status}`);
+
                 const trades = await res.json();
-                const container = document.getElementById('trades-container');
+
+                if (!trades || trades.length === 0) {
+                    container.innerHTML = '<p class="empty-state">No tienes intercambios activos aún.</p>';
+                    return;
+                }
+
                 container.innerHTML = '';
-                
                 trades.forEach(trade => {
                     const card = document.createElement('div');
                     card.className = 'trade-card';
-                    
-                    let actionHtml = '';
-                    if (trade.status !== 'COMPLETADO') {
-                        // Cumple la regla de formato de fechas YYYY-MM-DD
-                        actionHtml = `
-                            <div style="margin-top:12px; display:flex; gap:8px; align-items:flex-end;">
-                                <div class="filter-group" style="margin-bottom:0;">
-                                    <label style="font-size:0.75rem;">Fecha de Entrega</label>
+
+                    const isCompleted = trade.status === 'COMPLETED';
+                    const badgeClass = isCompleted ? 'badge-completed' : 'badge-active';
+                    const badgeLabel = isCompleted ? 'Completado' : 'En curso';
+
+                    const isUser1 = trade.user1 && trade.user1.id === currentUserId;
+                    const counterpart = isUser1 ? trade.user2 : trade.user1;
+                    const myRole = isUser1 ? 'OFFERER' : 'REQUESTER';
+
+                    let actionsHtml = '';
+                    if (!isCompleted) {
+                        actionsHtml = `
+                            <div class="trade-actions">
+                                <div class="date-group">
+                                    <label>Fecha de Entrega</label>
                                     <input type="date" id="date-${trade.id}">
                                 </div>
-                                <button onclick="confirmDelivery(${trade.id})" class="btn-action btn-primary" style="height:38px;">Confirmar Entrega</button>
+                                <button onclick="confirmDelivery(${trade.id})" class="btn-action btn-primary">
+                                    Confirmar Entrega
+                                </button>
                             </div>`;
                     } else {
-                        actionHtml = `<button onclick="openRatingModal(${trade.id})" class="btn-action btn-primary" style="margin-top:12px;">Calificar Contraparte</button>`;
+                        const yaCalificado = alreadyRated(trade.id);
+                        actionsHtml = `
+                            <div class="trade-actions">
+                                ${yaCalificado
+                                    ? `<span style="font-size:0.85rem; color:#10b981; font-weight:600;">✓ Ya calificaste este intercambio</span>`
+                                    : `<button onclick="openRatingModal(${trade.id}, ${counterpart ? counterpart.id : ''}, '${myRole}', '${counterpart ? counterpart.name : 'contraparte'}')" class="btn-action btn-primary">Calificar Contraparte</button>`
+                                }
+                            </div>`;
                     }
 
                     card.innerHTML = `
-                        <div style="display:flex; justify-content:between; align-items:center; margin-bottom:10px;">
+                        <div class="trade-header">
                             <strong>Intercambio #${trade.id}</strong>
-                            <span class="badge badge-${trade.status.toLowerCase()}">${trade.status}</span>
+                            <span class="badge ${badgeClass}">${badgeLabel}</span>
                         </div>
-                        <p style="font-size:0.9rem; color:#475569;">Fecha Apertura: ${trade.createdAt || 'N/A'}</p>
-                        ${actionHtml}
+                        <p class="trade-meta">Contraparte: <strong>${counterpart ? counterpart.name : 'N/A'}</strong></p>
+                        <p class="trade-meta">Fecha de entrega: ${trade.exchangeDate || 'Por confirmar'}</p>
+                        ${actionsHtml}
                     `;
                     container.appendChild(card);
                 });
+
+            } catch (error) {
+                console.error('Error cargando intercambios:', error);
+                container.innerHTML = '<p class="empty-state">No se pudieron cargar los intercambios.</p>';
             }
         }
 
         async function confirmDelivery(tradeId) {
-            const dateInput = document.getElementById(`date-${tradeId}`).value; // Captura YYYY-MM-DD de forma nativa
-            if (!dateInput) return alert('Seleccione una fecha');
+            const dateInput = document.getElementById(`date-${tradeId}`).value;
+            if (!dateInput) {
+                alert('Selecciona una fecha de entrega.');
+                return;
+            }
 
-            const res = await fetch(`/api/trades/${tradeId}/confirmar`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ deliveryDate: dateInput, userId: parseInt(currentUserId) })
-            });
+            try {
+                const res = await fetch(`${API_URL}/trades/${tradeId}/confirm`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        deliveryDate: dateInput,
+                        userId: currentUserId
+                    })
+                });
 
-            if (res.ok) {
-                alert('Entrega confirmada exitosamente');
-                loadTrades();
-            } else {
-                alert('No se pudo confirmar la entrega');
+                if (res.ok) {
+                    alert('Entrega confirmada exitosamente.');
+                    loadTrades();
+                } else {
+                    const msg = await res.text();
+                    alert(msg || 'No se pudo confirmar la entrega.');
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
             }
         }
 
-        function openRatingModal(tradeId) {
+        function openRatingModal(tradeId, ratedId, raterRole, counterpartName) {
             document.getElementById('rating-trade-id').value = tradeId;
+            document.getElementById('rating-rated-id').value = ratedId;
+            document.getElementById('rating-rater-role').value = raterRole;
+            document.getElementById('rating-modal-text').textContent =
+                `Vas a calificar a ${counterpartName} por el Intercambio #${tradeId}`;
+            document.getElementById('rating-score').value = '';
+            document.getElementById('rating-comment').value = '';
             document.getElementById('rating-modal').classList.remove('hidden');
         }
 
         document.getElementById('form-rating').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const dto = {
                 tradeId: parseInt(document.getElementById('rating-trade-id').value),
-                voterId: parseInt(currentUserId),
+                raterId: currentUserId,
+                ratedId: parseInt(document.getElementById('rating-rated-id').value),
                 score: parseInt(document.getElementById('rating-score').value),
-                comment: document.getElementById('rating-comment').value
+                comment: document.getElementById('rating-comment').value,
+                raterRole: document.getElementById('rating-rater-role').value
             };
 
-            const res = await fetch('/api/calificaciones', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dto)
-            });
+            try {
+                const res = await fetch(`${API_URL}/calificaciones`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dto)
+                });
 
-            if (res.status === 201) {
-                alert('¡Calificación guardada!');
-                document.getElementById('rating-modal').classList.add('hidden');
-            } else {
-                const text = await res.text();
-                alert(text);
+                if (res.status === 201) {
+                    alert('¡Calificación guardada!');
+                    markAsRated(dto.tradeId);
+                    document.getElementById('rating-modal').classList.add('hidden');
+                    loadTrades();
+                } else {
+                    const text = await res.text();
+                    alert(text || 'Error al guardar la calificación.');
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
             }
         });
 

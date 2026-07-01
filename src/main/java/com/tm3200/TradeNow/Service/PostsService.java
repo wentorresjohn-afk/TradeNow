@@ -1,8 +1,10 @@
 package com.tm3200.TradeNow.Service;
 
+import com.tm3200.TradeNow.Model.DTO.ModerationDTO;
 import com.tm3200.TradeNow.Model.DTO.PostsDTO;
 import com.tm3200.TradeNow.Model.Enum.PublicationStatus;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
+import com.tm3200.TradeNow.Model.Enum.UserType;
 import com.tm3200.TradeNow.Model.Posts;
 import com.tm3200.TradeNow.Model.PostsEntitys.Category;
 import com.tm3200.TradeNow.Model.PostsEntitys.Zone;
@@ -33,10 +35,10 @@ public class PostsService
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-    //Metodo que lista todas las publicaciones
+    //Metodo que lista todas las publicaciones (solo las aprobadas, visibles al público)
     public List<Posts> findAll()
     {
-        return postsJpaRepository.findAll();
+        return postsJpaRepository.findByStatus(PublicationStatus.APPROVED);
     }//Fin del metodo
 
     //Metodo que obtiene una publicación especifica
@@ -174,10 +176,63 @@ public class PostsService
 
     }//Fin del metodo
 
-    //Filtrar por categoría, zona y tipo
+    //Filtrar por categoría, zona y tipo (solo publicaciones aprobadas)
     public List<Posts> filterPosts(Integer categoryId, Integer zoneId, PublicationType type)
     {
-        return postsJpaRepository.findByCategoryIdAndZoneIdAndType(categoryId, zoneId, type);
+        return postsJpaRepository.findByCategoryIdAndZoneIdAndTypeAndStatus(categoryId, zoneId, type, PublicationStatus.APPROVED);
+    }//Fin del metodo
+
+    public Posts moderatePost(Integer postId, ModerationDTO dto) {
+        // Validar que el moderador existe y tiene el rol correcto
+        User moderator = userJpaRepository.findById(dto.getModeratorId()).orElse(null);
+        if (moderator == null) {
+            System.out.println("DEBUG: Moderador no encontrado: " + dto.getModeratorId());
+            return null;
+        }
+
+        if (moderator.getUserType() != UserType.MODERATOR && moderator.getUserType() != UserType.ADMINISTRATOR) {
+            System.out.println("DEBUG: Usuario sin permisos de moderación: " + dto.getModeratorId());
+            return null;
+        }
+
+        // Buscar la publicación
+        Posts post = postsJpaRepository.findById(postId).orElse(null);
+        if (post == null) {
+            System.out.println("DEBUG: Publicación no encontrada: " + postId);
+            return null;
+        }
+
+        // Solo se pueden moderar publicaciones en PENDING
+        if (post.getStatus() != PublicationStatus.PENDING) {
+            System.out.println("DEBUG: La publicación no está en estado PENDING: " + postId);
+            return null;
+        }
+
+        post.setStatus(dto.getStatus());
+        return postsJpaRepository.save(post);
+    }
+
+    //Metodo que lista las publicaciones pendientes de moderación (solo para moderadores/administradores)
+    public List<Posts> findPendingPosts(Integer moderatorId)
+    {
+        User moderator = userJpaRepository.findById(moderatorId).orElse(null);
+        if (moderator == null) {
+            System.out.println("DEBUG: Moderador no encontrado: " + moderatorId);
+            return null;
+        }
+
+        if (moderator.getUserType() != UserType.MODERATOR && moderator.getUserType() != UserType.ADMINISTRATOR) {
+            System.out.println("DEBUG: Usuario sin permisos de moderación: " + moderatorId);
+            return null;
+        }
+
+        return postsJpaRepository.findByStatus(PublicationStatus.PENDING);
+    }//Fin del metodo
+
+    //Metodo que lista TODAS las publicaciones de un usuario, sin importar el estado (para su perfil propio)
+    public List<Posts> findMyPosts(Integer userId)
+    {
+        return postsJpaRepository.findByUserId(userId);
     }//Fin del metodo
 
 

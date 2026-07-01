@@ -122,7 +122,6 @@
             background-color: var(--primary-hover);
         }
 
-        /* Sistema de Alertas */
         .alert {
             padding: 12px;
             border-radius: 8px;
@@ -166,11 +165,11 @@
         <form id="form-login">
             <div class="form-group">
                 <label for="login-email">Correo Electrónico</label>
-                <type-input><input type="email" id="login-email" required placeholder="ejemplo@correo.com"></type-input>
+                <input type="email" id="login-email" required placeholder="ejemplo@correo.com">
             </div>
             <div class="form-group">
                 <label for="login-password">Contraseña</label>
-                <type-input><input type="password" id="login-password" required placeholder="••••••••"></type-input>
+                <input type="password" id="login-password" required placeholder="••••••••">
             </div>
             <button type="submit" class="btn-submit">Ingresar</button>
         </form>
@@ -178,15 +177,24 @@
         <form id="form-register" class="hidden">
             <div class="form-group">
                 <label for="reg-name">Nombre Completo</label>
-                <type-input><input type="text" id="reg-name" required placeholder="John Wen Torres"></type-input>
+                <input type="text" id="reg-name" required placeholder="John Wen Torres">
             </div>
             <div class="form-group">
                 <label for="reg-email">Correo Electrónico</label>
-                <type-input><input type="email" id="reg-email" required placeholder="wentorresjohn@gmail.com"></type-input>
+                <input type="email" id="reg-email" required placeholder="ejemplo@correo.com">
             </div>
             <div class="form-group">
                 <label for="reg-password">Contraseña</label>
-                <type-input><input type="password" id="reg-password" required placeholder="Mínimo 8 caracteres (A-Z, a-z, 0-9, sp)"></type-input>
+                <input type="password" id="reg-password" required placeholder="Mínimo 8 caracteres (A-Z, a-z, 0-9, sp)">
+            </div>
+            <div class="form-group">
+                <label for="reg-usertype">Tipo de Usuario</label>
+                <select id="reg-usertype" required>
+                    <option value="" disabled selected>Selecciona tu rol</option>
+                    <option value="GENERAL">Usuario General</option>
+                    <option value="MODERATOR">Moderador</option>
+                    <option value="ADMINISTRATOR">Administrador</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="reg-zone">Zona Geográfica</label>
