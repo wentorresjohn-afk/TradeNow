@@ -65,6 +65,12 @@ public class UserController {
         }
     }
 
+    //Metodo que lista todos los usuarios registrados (para el panel de administrador)
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getProfile(@PathVariable("id") Integer id) {

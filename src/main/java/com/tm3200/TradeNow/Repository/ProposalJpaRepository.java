@@ -15,5 +15,6 @@ public interface ProposalJpaRepository extends JpaRepository<Proposal,Integer> {
     List<Proposal> findByTargetPublicationId(Posts targetPublicationId);
     List<Proposal> findBySenderId(User senderId);
     List<Proposal> findByCreatedAtBetween(LocalDate startDate, LocalDate endDate);
+    List<Proposal> findByOfferedPublicationId(Posts offeredPublicationId);
 
 }
