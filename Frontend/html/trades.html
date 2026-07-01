@@ -285,6 +285,17 @@
             document.getElementById('rating-modal').classList.add('hidden');
         });
 
+        function alreadyRated(tradeId) {
+            const rated = JSON.parse(localStorage.getItem('ratedTrades') || '[]');
+            return rated.includes(tradeId);
+        }
+
+        function markAsRated(tradeId) {
+            const rated = JSON.parse(localStorage.getItem('ratedTrades') || '[]');
+            rated.push(tradeId);
+            localStorage.setItem('ratedTrades', JSON.stringify(rated));
+        }
+
         async function loadTrades() {
             const container = document.getElementById('trades-container');
             try {
@@ -307,7 +318,6 @@
                     const badgeClass = isCompleted ? 'badge-completed' : 'badge-active';
                     const badgeLabel = isCompleted ? 'Completado' : 'En curso';
 
-                    // Determinar contraparte y rol
                     const isUser1 = trade.user1 && trade.user1.id === currentUserId;
                     const counterpart = isUser1 ? trade.user2 : trade.user1;
                     const myRole = isUser1 ? 'OFFERER' : 'REQUESTER';
@@ -325,11 +335,13 @@
                                 </button>
                             </div>`;
                     } else {
+                        const yaCalificado = alreadyRated(trade.id);
                         actionsHtml = `
                             <div class="trade-actions">
-                                <button onclick="openRatingModal(${trade.id}, ${counterpart ? counterpart.id : ''}, '${myRole}', '${counterpart ? counterpart.name : 'contraparte'}')" class="btn-action btn-primary">
-                                    Calificar Contraparte
-                                </button>
+                                ${yaCalificado
+                                    ? `<span style="font-size:0.85rem; color:#10b981; font-weight:600;">✓ Ya calificaste este intercambio</span>`
+                                    : `<button onclick="openRatingModal(${trade.id}, ${counterpart ? counterpart.id : ''}, '${myRole}', '${counterpart ? counterpart.name : 'contraparte'}')" class="btn-action btn-primary">Calificar Contraparte</button>`
+                                }
                             </div>`;
                     }
 
@@ -412,6 +424,7 @@
 
                 if (res.status === 201) {
                     alert('¡Calificación guardada!');
+                    markAsRated(dto.tradeId);
                     document.getElementById('rating-modal').classList.add('hidden');
                     loadTrades();
                 } else {
