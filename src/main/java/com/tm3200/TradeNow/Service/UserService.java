@@ -72,6 +72,11 @@ public class UserService {
         return optional.get();
     }
 
+    //Metodo que retorna todos los usuarios registrados en el sistema
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
     public User updateProfile(Integer id, UserUpdateDTO dto) {
         Optional<User> optional = userRepository.findById(id);
         if (!optional.isPresent()) {

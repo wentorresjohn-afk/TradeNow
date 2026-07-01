@@ -55,81 +55,184 @@ function renderProfile(user) {
             <div class="profile-info">
                 <h2>${user.name || 'Sin nombre'}</h2>
                 <div class="email">${user.email || ''}</div>
+
                 <div>
                     <span class="badge type">${user.userType || 'GENERAL'}</span>
-                    <span class="badge ${user.active ? 'active' : 'inactive'}">${user.active ? 'Activo' : 'Inactivo'}</span>
+                    <span class="badge ${user.active ? 'active' : 'inactive'}">
+                        ${user.active ? 'Activo' : 'Inactivo'}
+                    </span>
                 </div>
-                <p class="profile-description">${user.description || 'Sin descripción aún.'}</p>
-                <p style="font-size: 0.85rem; color: #6b7280; margin-top: 8px;">📍 ${user.geographicZone || 'Zona no especificada'}</p>
-                <button class="btn-edit" onclick="window.location.href='editar-perfil.html'">Editar Perfil</button>
+
+                <p class="profile-description">
+                    ${user.description || 'Sin descripción aún.'}
+                </p>
+
+                <p style="font-size:0.85rem;color:#6b7280;margin-top:8px;">
+                    📍 ${user.geographicZone || 'Zona no especificada'}
+                </p>
+
+                <button class="btn-edit"
+                        onclick="window.location.href='editar-perfil.html'">
+                    Editar Perfil
+                </button>
             </div>
         </div>
 
         <div class="stats-row">
+
             <div class="stat-box">
                 <div class="value">⭐ ${rating}</div>
                 <div class="label">Calificación promedio</div>
             </div>
+
             <div class="stat-box">
                 <div class="value">${user.completedTrades ?? 0}</div>
                 <div class="label">Trueques completados</div>
             </div>
+
         </div>
     `;
 }
 
 async function loadMyPosts(userId) {
+
     try {
+
         const response = await fetch(`${API_URL}/publicaciones/mias?userId=${userId}`);
 
         if (response.status === 204) {
-            myPostsContainer.innerHTML = '<p class="empty-state">Aún no has creado publicaciones.</p>';
+            myPostsContainer.innerHTML =
+                '<p class="empty-state">Aún no has creado publicaciones.</p>';
             return;
         }
 
         if (!response.ok) {
-            throw new Error(`Error ${response.status} al cargar publicaciones`);
+            throw new Error(`Error ${response.status}`);
         }
 
         const myPosts = await response.json();
+
         renderMyPosts(myPosts);
 
     } catch (error) {
-        console.error('Error cargando mis publicaciones:', error);
-        myPostsContainer.innerHTML = '<p class="empty-state">Ocurrió un error al cargar tus publicaciones.</p>';
+
+        console.error(error);
+
+        myPostsContainer.innerHTML =
+            '<p class="empty-state">Ocurrió un error al cargar tus publicaciones.</p>';
+
     }
+
 }
 
 function renderMyPosts(posts) {
+
     myPostsContainer.innerHTML = '';
 
     if (!posts || posts.length === 0) {
-        myPostsContainer.innerHTML = '<p class="empty-state">Aún no has creado publicaciones.</p>';
+
+        myPostsContainer.innerHTML =
+            '<p class="empty-state">Aún no has creado publicaciones.</p>';
+
         return;
+
     }
 
     const statusColors = {
+
         PENDING: '#f59e0b',
         APPROVED: '#10b981',
         REJECTED: '#ef4444',
         HIDDEN: '#6b7280'
+
     };
 
     posts.forEach(post => {
+
         const card = document.createElement('div');
+
         card.className = 'post-card';
 
         card.innerHTML = `
-            ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title || 'Publicación'}">` : ''}
+
+            ${post.imageUrl
+                ? `<img src="${post.imageUrl}" alt="${post.title}">`
+                : ''}
+
             <div>
-                <span class="post-tag">${post.type || 'Trueque'}</span>
-                <h4>${post.title || 'Sin título'}</h4>
-                <p>${post.description || 'Sin descripción'}</p>
-                <p class="post-status" style="color: ${statusColors[post.status] || '#6b7280'};">
-                    ${post.status || 'PENDING'}
+
+                <span class="post-tag">
+                    ${post.type || 'Trueque'}
+                </span>
+
+                <h4>
+                    ${post.title || 'Sin título'}
+                </h4>
+
+                <p>
+                    ${post.description || 'Sin descripción'}
                 </p>
+
+                <p class="post-status"
+                   style="color:${statusColors[post.status] || '#6b7280'}">
+
+                    ${post.status || 'PENDING'}
+
+                </p>
+
+                <button class="btn-delete"
+                        onclick="deletePost(${post.id})">
+
+                    Eliminar
+
+                </button>
+
             </div>
+
         `;
+
         myPostsContainer.appendChild(card);
+
     });
+
+}
+
+async function deletePost(postId) {
+
+    const confirmDelete = confirm("¿Deseas eliminar esta publicación?");
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/publicaciones/delete/${postId}?userId=${userId}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const message = await response.text();
+
+        if (!response.ok) {
+            throw new Error(message);
+        }
+
+        alert(message);
+
+        loadMyPosts(userId);
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert(error.message);
+
+    }
+
 }
