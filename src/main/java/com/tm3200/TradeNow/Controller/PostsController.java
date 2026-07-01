@@ -1,5 +1,6 @@
 package com.tm3200.TradeNow.Controller;
 
+import com.tm3200.TradeNow.Model.DTO.ModerationDTO;
 import com.tm3200.TradeNow.Model.DTO.PostsDTO;
 import com.tm3200.TradeNow.Model.Enum.PublicationType;
 import com.tm3200.TradeNow.Model.Posts;
@@ -137,4 +138,24 @@ public class PostsController
 
         return ResponseEntity.ok(posts);
     }
+
+    @PutMapping("/{id}/moderar")
+    public ResponseEntity<?> moderatePost(@PathVariable Integer id, @Valid @RequestBody ModerationDTO dto, BindingResult result) {
+        if (result.hasErrors()) {
+            List<String> errors = new ArrayList<>();
+            for (ObjectError error : result.getAllErrors()) {
+                errors.add(error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Posts post = postsService.moderatePost(id, dto);
+
+        if (post == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("No se pudo moderar la publicación. Verifica permisos o estado de la publicación.");
+        }
+
+        return ResponseEntity.ok("Publicación " + dto.getStatus() + " exitosamente");
+    }//Fin del metodo
 }
