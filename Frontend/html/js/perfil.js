@@ -80,7 +80,7 @@ function renderProfile(user) {
 
 async function loadMyPosts(userId) {
     try {
-        const response = await fetch(`${API_URL}/publicaciones/all`);
+        const response = await fetch(`${API_URL}/publicaciones/mias?userId=${userId}`);
 
         if (response.status === 204) {
             myPostsContainer.innerHTML = '<p class="empty-state">Aún no has creado publicaciones.</p>';
@@ -91,11 +91,7 @@ async function loadMyPosts(userId) {
             throw new Error(`Error ${response.status} al cargar publicaciones`);
         }
 
-        const allPosts = await response.json();
-
-        // Filtramos solo las publicaciones del usuario actual
-        const myPosts = allPosts.filter(post => post.user && post.user.id == userId);
-
+        const myPosts = await response.json();
         renderMyPosts(myPosts);
 
     } catch (error) {
