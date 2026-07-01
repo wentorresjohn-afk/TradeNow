@@ -17,6 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
         userDisplay.textContent = `Usuario: ${userName}`;
     }
 
+     // 3.1 Mostrar el link de moderación solo si el usuario es MODERATOR o ADMINISTRATOR
+    const userType = localStorage.getItem('userType');
+    const navModerar = document.getElementById('nav-moderar');
+    if (navModerar && (userType === 'MODERATOR' || userType === 'ADMINISTRATOR')) {
+        navModerar.classList.remove('hidden');
+    }
+
     // 4. Lógica para el botón de Cerrar Sesión
     const logoutBtn = document.getElementById('btn-session-logout');
     if (logoutBtn) {
