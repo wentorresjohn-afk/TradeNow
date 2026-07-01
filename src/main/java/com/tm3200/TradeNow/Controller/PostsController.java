@@ -116,12 +116,15 @@ public class PostsController
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-
-        if (postsService.deletePost(id)) {
-            return ResponseEntity.ok("Publicación eliminada exitosamente");
+    public ResponseEntity<?> delete(@PathVariable Integer id, @RequestParam Integer adminId) {
+        try {
+            if (postsService.deletePost(id, adminId)) {
+                return ResponseEntity.ok("Publicación eliminada exitosamente");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Publicación no encontrada");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Publicación no encontrada");
     }
 
     @GetMapping("/pendientes")

@@ -21,7 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const userType = localStorage.getItem('userType');
     const navModerar = document.getElementById('nav-moderar');
     if (navModerar && (userType === 'MODERATOR' || userType === 'ADMINISTRATOR')) {
-        navModerar.classList.remove('hidden');
+    navModerar.classList.remove('hidden');
+    }
+
+    // 3.2 Mostrar el link de administrar usuarios solo si el usuario es ADMINISTRATOR
+    const navAdmin = document.getElementById('nav-admin');
+    if (navAdmin && userType === 'ADMINISTRATOR') {
+    navAdmin.classList.remove('hidden');
     }
 
     // 4. Lógica para el botón de Cerrar Sesión

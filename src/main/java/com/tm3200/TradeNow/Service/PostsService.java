@@ -160,9 +160,16 @@ public class PostsService
         return postsJpaRepository.save(posts);
     }//Fin del metodo
 
-    //Eliminar una publicación por id
-    public boolean deletePost(Integer id)
+    //Eliminar una publicación por id (solo administradores)
+    public boolean deletePost(Integer id, Integer adminId)
     {
+        User admin = userJpaRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Administrador no encontrado"));
+
+        if (admin.getUserType() != UserType.ADMINISTRATOR) {
+            throw new RuntimeException("Solo los administradores pueden eliminar publicaciones");
+        }
+
         Optional<Posts> posts = postsJpaRepository.findById(id);
 
         if (posts.isPresent())
