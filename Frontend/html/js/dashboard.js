@@ -1,42 +1,46 @@
 const API_URL = 'https://tradenow-437n.onrender.com/api';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Obtener los datos que guardaste en el localStorage al iniciar sesión
+    // 1. Obtener los datos guardados en localStorage
     const userId = localStorage.getItem('userId');
     const userName = localStorage.getItem('userName');
+    const userType = localStorage.getItem('userType');
 
-    // 2. Seguridad: Si no hay un ID de usuario, redirigir inmediatamente al login
+    // 2. Seguridad: Si no hay ID, redirigir al login
     if (!userId) {
         window.location.href = 'login.html';
         return;
     }
 
-    // 3. Pintar el nombre del usuario en la barra superior
+    // 3. Pintar nombre del usuario
     const userDisplay = document.getElementById('user-display-name');
     if (userDisplay) {
         userDisplay.textContent = `Usuario: ${userName}`;
     }
 
-     // 3.1 Mostrar el link de moderación solo si el usuario es MODERATOR o ADMINISTRATOR
-    const userType = localStorage.getItem('userType');
+    // 3.1 Pintar saludo de bienvenida
+    const welcomeName = document.getElementById('welcome-user-name');
+    if (welcomeName) {
+        welcomeName.textContent = `¡Bienvenido de nuevo, ${userName}!`;
+    }
+
+    // 3.2 Gestión de visibilidad del menú según rol
+    const navCreatePost = document.getElementById('nav-create-post');
     const navModerar = document.getElementById('nav-moderar');
-    if (navModerar && (userType === 'MODERATOR' || userType === 'ADMINISTRATOR')) {
-    navModerar.classList.remove('hidden');
-    }
-
-    // 3.2 Mostrar el link de administrar usuarios solo si el usuario es ADMINISTRATOR
     const navAdmin = document.getElementById('nav-admin');
-    if (navAdmin && userType === 'ADMINISTRATOR') {
-    navAdmin.classList.remove('hidden');
+
+    // Si es Administrador, ocultamos el botón de crear y mostramos las herramientas de admin
+    if (userType === 'ADMINISTRATOR') {
+        if (navCreatePost) navCreatePost.classList.add('hidden');
+        if (navModerar) navModerar.classList.remove('hidden');
+        if (navAdmin) navAdmin.classList.remove('hidden');
+    } 
+    // Si es moderador, solo mostramos el botón de moderación
+    else if (userType === 'MODERATOR') {
+        if (navModerar) navModerar.classList.remove('hidden');
     }
 
-    // 3.3 Mostrar el link de reportes solo si el usuario es ADMINISTRATOR
-    const navReportes = document.getElementById('nav-reportes');
-    if (navReportes && userType === 'ADMINISTRATOR') {
-        navReportes.classList.remove('hidden');
-    } 
-
-    // 4. Lógica para el botón de Cerrar Sesión
+    // 4. Botón de Cerrar Sesión
     const logoutBtn = document.getElementById('btn-session-logout');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
@@ -45,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Cargar las publicaciones
+    // 5. Cargar publicaciones
     loadPosts();
 });
 
@@ -55,19 +59,15 @@ async function loadPosts() {
     try {
         const response = await fetch(`${API_URL}/publicaciones/all`);
 
-        // 204 No Content -> no hay publicaciones
         if (response.status === 204) {
             postsContainer.innerHTML = '<p class="empty-state">Aún no hay publicaciones disponibles.</p>';
             return;
         }
 
-        if (!response.ok) {
-            throw new Error(`Error ${response.status} al cargar publicaciones`);
-        }
+        if (!response.ok) throw new Error(`Error ${response.status}`);
 
         const posts = await response.json();
         renderPosts(posts);
-
     } catch (error) {
         console.error('Error cargando publicaciones:', error);
         postsContainer.innerHTML = '<p class="empty-state">Ocurrió un error al cargar las publicaciones.</p>';
@@ -87,7 +87,7 @@ function renderPosts(posts) {
         card.className = 'post-card';
 
         card.innerHTML = `
-            ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title || 'Publicación'}">` : ''}
+            ${post.imageUrl ? `<img src="${post.imageUrl}" alt="${post.title}">` : ''}
             <div>
                 <span class="post-tag">${post.type || 'Trueque'}</span>
                 <h4>${post.title || 'Sin título'}</h4>
@@ -105,12 +105,11 @@ function renderPosts(posts) {
 }
 
 // ==========================================
-// RF9: Enviar propuesta de intercambio
+// Lógica de Propuestas
 // ==========================================
 const proposalModal = document.getElementById('proposal-modal');
 const formCreateProposal = document.getElementById('form-create-proposal');
 const offeredPostSelect = document.getElementById('proposal-offered-post');
-const noPostsMsg = document.getElementById('proposal-no-posts-msg');
 const btnSubmitProposal = document.getElementById('btn-submit-proposal');
 
 async function openProposalModal(targetPostId, postTitle) {
@@ -120,46 +119,30 @@ async function openProposalModal(targetPostId, postTitle) {
     await loadMyPostsForSelect(targetPostId);
 }
 
-// Carga las publicaciones del usuario actual para elegir cuál ofrece
 async function loadMyPostsForSelect(excludePostId) {
     offeredPostSelect.innerHTML = '<option value="" disabled selected>Cargando tus publicaciones...</option>';
-    noPostsMsg.classList.add('hidden');
-    btnSubmitProposal.disabled = false;
-
     const userId = localStorage.getItem('userId');
 
     try {
         const response = await fetch(`${API_URL}/publicaciones/all`);
-        if (response.status === 204) {
-            showNoPostsState();
-            return;
-        }
-        if (!response.ok) throw new Error('Error al cargar tus publicaciones');
-
+        if (response.status === 204) { showNoPostsState(); return; }
+        
         const allPosts = await response.json();
-        const myPosts = allPosts.filter(p =>
-            p.user && p.user.id == userId && p.id != excludePostId
-        );
+        const myPosts = allPosts.filter(p => p.user && p.user.id == userId && p.id != excludePostId);
 
-        if (myPosts.length === 0) {
-            showNoPostsState();
-            return;
-        }
+        if (myPosts.length === 0) { showNoPostsState(); return; }
 
         offeredPostSelect.innerHTML = '<option value="" disabled selected>Selecciona una publicación</option>';
         myPosts.forEach(p => {
             offeredPostSelect.innerHTML += `<option value="${p.id}">${p.title}</option>`;
         });
-
     } catch (error) {
-        console.error('Error cargando publicaciones propias:', error);
         offeredPostSelect.innerHTML = '<option value="" disabled selected>Error al cargar</option>';
     }
 }
 
 function showNoPostsState() {
-    offeredPostSelect.innerHTML = '<option value="" disabled selected>No tienes publicaciones</option>';
-    noPostsMsg.classList.remove('hidden');
+    offeredPostSelect.innerHTML = '<option value="" disabled selected>No tienes publicaciones disponibles</option>';
     btnSubmitProposal.disabled = true;
 }
 
@@ -169,18 +152,8 @@ document.getElementById('btn-close-proposal').addEventListener('click', () => {
 
 formCreateProposal.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const userId = localStorage.getItem('userId');
-    if (!userId) {
-        window.location.href = 'login.html';
-        return;
-    }
-
     const offeredPublicationId = offeredPostSelect.value;
-    if (!offeredPublicationId) {
-        alert('Selecciona una publicación para ofrecer.');
-        return;
-    }
 
     const proposalData = {
         senderId: parseInt(userId),
@@ -195,17 +168,11 @@ formCreateProposal.addEventListener('submit', async (e) => {
             body: JSON.stringify(proposalData)
         });
 
-        if (!response.ok) {
-            const data = await response.json().catch(() => null);
-            const errorMsg = Array.isArray(data) ? data.join(', ') : (data || 'Error al enviar la propuesta');
-            throw new Error(errorMsg);
-        }
+        if (!response.ok) throw new Error('Error al enviar la propuesta');
 
         alert('¡Propuesta enviada con éxito!');
         proposalModal.classList.add('hidden');
-
     } catch (error) {
         alert('Error: ' + error.message);
-        console.error('Detalle:', error);
     }
 });
