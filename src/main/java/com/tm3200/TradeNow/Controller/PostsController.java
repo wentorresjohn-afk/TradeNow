@@ -124,6 +124,34 @@ public class PostsController
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Publicación no encontrada");
     }
 
+    @GetMapping("/pendientes")
+    public ResponseEntity<?> getPendingPosts(@RequestParam Integer moderatorId)
+    {
+        List<Posts> posts = postsService.findPendingPosts(moderatorId);
+
+        if (posts == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permisos para ver publicaciones pendientes");
+        }
+
+        if (posts.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(posts);
+    }//Fin del metodo
+
+    @GetMapping("/mias")
+    public ResponseEntity<?> getMyPosts(@RequestParam Integer userId)
+    {
+        List<Posts> posts = postsService.findMyPosts(userId);
+
+        if (posts.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(posts);
+    }//Fin del metodo
+
     @GetMapping("/filter")
     public ResponseEntity<?> filterPosts(
             @RequestParam(required = false) Integer categoria,

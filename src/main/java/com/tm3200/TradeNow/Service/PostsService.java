@@ -35,10 +35,10 @@ public class PostsService
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-    //Metodo que lista todas las publicaciones
+    //Metodo que lista todas las publicaciones (solo las aprobadas, visibles al público)
     public List<Posts> findAll()
     {
-        return postsJpaRepository.findAll();
+        return postsJpaRepository.findByStatus(PublicationStatus.APPROVED);
     }//Fin del metodo
 
     //Metodo que obtiene una publicación especifica
@@ -176,10 +176,10 @@ public class PostsService
 
     }//Fin del metodo
 
-    //Filtrar por categoría, zona y tipo
+    //Filtrar por categoría, zona y tipo (solo publicaciones aprobadas)
     public List<Posts> filterPosts(Integer categoryId, Integer zoneId, PublicationType type)
     {
-        return postsJpaRepository.findByCategoryIdAndZoneIdAndType(categoryId, zoneId, type);
+        return postsJpaRepository.findByCategoryIdAndZoneIdAndTypeAndStatus(categoryId, zoneId, type, PublicationStatus.APPROVED);
     }//Fin del metodo
 
     public Posts moderatePost(Integer postId, ModerationDTO dto) {
@@ -211,4 +211,27 @@ public class PostsService
         post.setStatus(dto.getStatus());
         return postsJpaRepository.save(post);
     }
+
+    //Metodo que lista las publicaciones pendientes de moderación (solo para moderadores/administradores)
+    public List<Posts> findPendingPosts(Integer moderatorId)
+    {
+        User moderator = userJpaRepository.findById(moderatorId).orElse(null);
+        if (moderator == null) {
+            System.out.println("DEBUG: Moderador no encontrado: " + moderatorId);
+            return null;
+        }
+
+        if (moderator.getUserType() != UserType.MODERATOR && moderator.getUserType() != UserType.ADMINISTRATOR) {
+            System.out.println("DEBUG: Usuario sin permisos de moderación: " + moderatorId);
+            return null;
+        }
+
+        return postsJpaRepository.findByStatus(PublicationStatus.PENDING);
+    }//Fin del metodo
+
+    //Metodo que lista TODAS las publicaciones de un usuario, sin importar el estado (para su perfil propio)
+    public List<Posts> findMyPosts(Integer userId)
+    {
+        return postsJpaRepository.findByUserId(userId);
+    }//Fin del metodo
 }
