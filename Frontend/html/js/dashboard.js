@@ -94,7 +94,7 @@ function renderPosts(posts) {
                 <p>${post.description || 'Sin descripción'}</p>
             </div>
             <div class="post-footer">
-                <span style="font-size: 0.8rem; color: #94a3b8;">ID: ${post.id}</span>
+                <span style="font-size: 0.8rem; color: #94a3b8;">Por: ${post.user ? post.user.name : 'Usuario desconocido'}</span>
                 <button onclick="openProposalModal(${post.id}, '${post.title}')" class="btn-action btn-primary" style="padding: 6px 12px; font-size: 0.8rem;">
                     Ofrecer Trueque
                 </button>

@@ -164,6 +164,13 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         .post-card img {
@@ -224,6 +231,15 @@
             background-color: var(--primary-hover);
         }
 
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
         .empty-state {
             color: var(--text-muted);
             font-size: 0.95rem;
@@ -256,10 +272,35 @@
             max-width: 460px;
         }
 
+        .modal-content h3 {
+            margin-bottom: 16px;
+            font-size: 1.05rem;
+        }
+
         .modal-actions {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -273,7 +314,6 @@
             <li class="nav-item"><a href="propuestas.html">Mis Propuestas</a></li>
             <li class="nav-item"><a href="trades.html">Mis Intercambios</a></li>
             <li class="nav-item"><a href="perfil.html">Mi Perfil</a></li>
-            <li class="nav-item"><a href="historial.html">Historial</a></li>
             
             <li class="nav-item btn-action" id="nav-create-post">
                 <a href="crear-publicacion.html">+ Crear Publicación</a>
@@ -303,6 +343,27 @@
             </div>
         </section>
     </main>
+
+    <div id="proposal-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="proposal-modal-text">Vas a proponer un trueque</h3>
+            <form id="form-create-proposal">
+                <input type="hidden" id="proposal-target-id">
+
+                <div class="filter-group">
+                    <label for="proposal-offered-post">Elegí qué publicación ofrecés a cambio:</label>
+                    <select id="proposal-offered-post" required>
+                        <option value="" disabled selected>Cargando tus publicaciones...</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-close-proposal" class="btn-action btn-secondary">Cancelar</button>
+                    <button type="submit" id="btn-submit-proposal" class="btn-action btn-primary">Enviar Propuesta</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="js/dashboard.js"></script>
 </body>
